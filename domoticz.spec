@@ -103,12 +103,13 @@ install -d build && cd build
       -DUSE_STATIC_BOOST=NO \
       -DCMAKE_INSTALL_PREFIX=%{_datadir}/%{name} \
       ..
+
 %{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-%{__make} -C build \
-      install
+%{__make} -C build install \
+      DESTDIR=$RPM_BUILD_ROOT
 
 # remove docs, we grab them in files below
 rm -f $RPM_BUILD_ROOT%{_datadir}/%{name}/*.txt
