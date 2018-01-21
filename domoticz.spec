@@ -34,15 +34,12 @@ BuildRequires:	sqlite-devel
 BuildRequires:	systemd-devel
 BuildRequires:	tinyxpath-devel
 BuildRequires:	zlib-devel
-
-Requires(pre):	shadow-utils
+Requires(pre):  /usr/sbin/groupadd
+Requires(pre):  /usr/sbin/useradd
 Requires(post):	systemd
 Requires(postun):	systemd
 Requires(preun):	systemd
-
-Requires:	google-droid-sans-fonts
-Suggests:	system-python-libs >= 3.4
-
+Requires:       fonts-TTF-Google-Droid
 Provides:	bundled(js-ace)
 Provides:	bundled(js-angular-ui-bootstrap) = 0.13.4
 Provides:	bundled(js-angularamd) = 0.2.1
@@ -131,13 +128,13 @@ install -d $RPM_BUILD_ROOT%{_sharedstatedir}/%{name}/
 
 # Unbundle DroidSans.ttf
 rm -f $RPM_BUILD_ROOT%{_datadir}/%{name}/www/styles/elemental/fonts/DroidSans.ttf
-ln -s %{_fontdir}/google-droid/DroidSans.ttf \
+ln -s /usr/share/fonts/TTF/DroidSans.ttf \
       $RPM_BUILD_ROOT%{_datadir}/%{name}/www/styles/elemental/fonts/
 rm -f $RPM_BUILD_ROOT%{_datadir}/%{name}/www/styles/element-light/fonts/DroidSans.ttf
-ln -s %{_fontdir}/google-droid/DroidSans.ttf \
+ln -s /usr/share/fonts/TTF/DroidSans.ttf \
       $RPM_BUILD_ROOT%{_datadir}/%{name}/www/styles/element-light/fonts/
 rm -f $RPM_BUILD_ROOT%{_datadir}/%{name}/www/styles/element-dark/fonts/DroidSans.ttf
-ln -s %{_fontdir}/google-droid/DroidSans.ttf \
+ln -s /usr/share/fonts/TTF/DroidSans.ttf \
       $RPM_BUILD_ROOT%{_datadir}/%{name}/www/styles/element-dark/fonts/
 
 # OpenZWave Control Panel temp file
