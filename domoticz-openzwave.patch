@@ -1,0 +1,49 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 42082192..f16726f8 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -598,7 +598,7 @@ endif()
+ IF(OpenZWave)
+   message(STATUS ${OpenZWave})
+   target_link_libraries(domoticz ${OpenZWave})
+-  include_directories(${CMAKE_SOURCE_DIR}/hardware/openzwave)
++  include_directories(${OPENZWAVE_INCLUDE_DIRS})
+   add_definitions(-DWITH_OPENZWAVE)
+   # open-zwave needs libudev
+   IF(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+diff --git a/hardware/openzwave/control_panel/ozwcp.cpp b/hardware/openzwave/control_panel/ozwcp.cpp
+index ffd8d742..79c708ce 100644
+--- a/hardware/openzwave/control_panel/ozwcp.cpp
++++ b/hardware/openzwave/control_panel/ozwcp.cpp
+@@ -39,11 +39,11 @@
+ #include <stdlib.h>
+ #include <time.h>
+ #include <string.h>
+-#include "Options.h"
+-#include "Manager.h"
+-#include "Node.h"
+-#include "Group.h"
+-#include "Notification.h"
++#include <Options.h>
++#include <Manager.h>
++#include <Node.h>
++#include <Group.h>
++#include <Notification.h>
+ 
+ #include <sys/stat.h>
+ #include <fstream>
+diff --git a/hardware/openzwave/control_panel/ozwcp.h b/hardware/openzwave/control_panel/ozwcp.h
+index 29ebc0e3..7a027815 100644
+--- a/hardware/openzwave/control_panel/ozwcp.h
++++ b/hardware/openzwave/control_panel/ozwcp.h
+@@ -37,8 +37,8 @@
+ 
+ #include <list>
+ #include <algorithm>
+-#include "Driver.h"
+-#include "Notification.h"
++#include <Driver.h>
++#include <Notification.h>
+ 
+ using namespace OpenZWave;
+ 

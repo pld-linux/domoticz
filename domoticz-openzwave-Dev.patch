@@ -1,0 +1,146 @@
+diff --git a/hardware/OpenZWave.cpp b/hardware/OpenZWave.cpp
+index 1f5c341c..51b2865b 100644
+--- a/hardware/OpenZWave.cpp
++++ b/hardware/OpenZWave.cpp
+@@ -1641,19 +1641,83 @@ void COpenZWave::AddValue(const OpenZWave::ValueID &vID, const NodeInfo *pNodeIn
+ 		if (newInstance != 0)
+ 		{
+ 			_device.instanceID = newInstance;
+-			if (m_pManager->GetValueAsByte(vID, &byteValue) == true)
++            //Door lock device
++			if (
++				(vLabel == "Access Control") ||
++				(vLabel == "UserCode")
++				)
+ 			{
+-				_device.devType = ZDTYPE_SWITCH_NORMAL;
+-				if (byteValue == 0)
+-					_device.intvalue = 0;
+-				else
+-					_device.intvalue = 255;
+-				InsertDevice(_device);
++				if( ValueID::ValueType_List == vID.GetType() )
++				{
++					try
++					{
++						std::string vListStr;
++						if (m_pManager->GetValueListSelection(vID, &vListStr))
++						{
++							_device.devType = ZDTYPE_SWITCH_NORMAL;
++							_device.Alarm_Type = 6;
++							_device.intvalue = 0;
++							if (vListStr == "Access Control - RF Lock")
++								_device.intvalue = 24;
++							else if (vListStr == "Access Control - RF Unlock")
++								_device.intvalue = 25;
++							else if (vListStr == "Access Control - Manual Lock")
++								_device.intvalue = 21;
++							else if (vListStr == "Access Control - Manual Unlock")
++								_device.intvalue = 22;
++							else if (vListStr == "Access Control - KeyPad Lock")
++								_device.intvalue = 18;
++							else if (vListStr == "Access Control - KeyPad Unlock")
++								_device.intvalue = 19;
++							else if (vListStr == "Not Active")
++								_device.intvalue = 1;
++							else
++								_log.Log(LOG_STATUS, "OpenZWave: Value_Added: Unhandled List Selection: %s", vListStr.c_str());
++							InsertDevice(_device);
++						}
++					}
++					catch (...)
++					{
++						_log.Log(LOG_STATUS, "OpenZWave: Value_Added: GetValueListSelection Exception");
++					}
++				}
++				else {
++					_log.Log(LOG_STATUS, "OpenZWave: Value_Added: Unhandled Value for Label: %s", vLabel.c_str());
++				}
++			}
++			else if( ValueID::ValueType_Byte == vID.GetType() )
++			{
++				if (m_pManager->GetValueAsByte(vID, &byteValue) == true)
++				{
++					_device.devType = ZDTYPE_SWITCH_NORMAL;
++					if (byteValue == 0)
++						_device.intvalue = 0;
++					else
++						_device.intvalue = 255;
++					InsertDevice(_device);
++				}
+ 			}
++            else
++            {
++                _log.Log(LOG_STATUS, "OpenZWave: Value_Added: Unhandled Value: X, Type: %i", vID.GetType());
++            }
+ 		}
+ 		else
+ 		{
+-			if (vLabel != "SourceNodeId")
++			if (vLabel == "UserCode") {
++				if ((vType == OpenZWave::ValueID::ValueType_Raw) || (vType == OpenZWave::ValueID::ValueType_String))
++				{
++					std::string strValue;
++					if (m_pManager->GetValueAsString(vID, &strValue) == true)
++						_log.Log(LOG_STATUS, "OpenZWave: Value_Added: UserCode: %s", strValue.c_str());
++				}
++				else
++				{
++					if (m_pManager->GetValueAsByte(vID, &byteValue) == true)
++						_log.Log(LOG_STATUS, "OpenZWave: Value_Added: UserCode: %i", byteValue);
++				}
++			}
++			else if (vLabel != "SourceNodeId")
+ 			{
+ 				_log.Log(LOG_STATUS, "OpenZWave: Value_Added: Unhandled Label: %s, Unit: %s", vLabel.c_str(), vUnits.c_str());
+ 			}
+@@ -2395,7 +2459,7 @@ void COpenZWave::UpdateValue(const OpenZWave::ValueID &vID)
+ 	unsigned char byteValue = 0;
+ 	int32 intValue = 0;
+ 	std::string strValue = "";
+-	int32 lValue = 0;
++	std::string lValue = "";
+ 
+ 	if (vType == OpenZWave::ValueID::ValueType_Decimal)
+ 	{
+@@ -2833,16 +2897,40 @@ void COpenZWave::UpdateValue(const OpenZWave::ValueID &vID)
+ 				}
+ 				else if (vLabel == "Access Control")
+ 				{
++					if (!lValue.empty()) {
++						if (lValue == "Access Control - RF Lock")
++							byteValue = 24;
++						else if (lValue == "Access Control - RF Unlock")
++							byteValue = 25;
++						else if (lValue == "Access Control - Manual Lock")
++							byteValue = 21;
++						else if (lValue == "Access Control - Manual Unlock")
++							byteValue = 22;
++						else if (lValue == "Access Control - KeyPad Lock")
++							byteValue = 18;
++						else if (lValue == "Access Control - KeyPad Unlock")
++							byteValue = 19;
++						else if (lValue == "Not Active")
++							byteValue = 0;
++						else
++							byteValue = 0;
++					}
++
+ 					switch (byteValue) {
+ 					case 0x00: 	// Previous Events cleared
+ 					case 0x06:	//Keypad unlock/Arm Home
++					case 0x12: 	// KeyPad lock
++					case 0x15: 	// Manual Lock
+ 					case 0x17: 	// Door closed
++					case 0x18: 	// RF operated lock
+ 					case 0xfe:	// Unkown event; returned when retrieving the current state.
+ 						intValue = 0;
+ 						break;
+ 
+ 					case 0x05:	//Keypad Lock/Arm Away
++					case 0x13: 	// KeyPad unlock
+ 					case 0x16: 	// Door open
++					case 0x19: 	// RF operated unlock
+ 					default:	// all others, interpret as alarm
+ 						intValue = 255;
+ 						break;

@@ -1,0 +1,14 @@
+[Unit]
+Description=Domoticz Home Automation Server
+
+[Service]
+User=domoticz
+Group=domoticz
+EnvironmentFile=/etc/sysconfig/domoticz
+ExecStart=/usr/bin/domoticz -www $WWW_PORT -sslwww $SSL_PORT -sslcert $SSLCERT -sslpass $SSLPASS -sslmethod $SSLMETHOD -ssloptions $SSLOPTIONS -ssldhparam $SSLDHPARAM -wwwroot $WWW_ROOT -dbase $DBASE -userdata $USERDATA -verbose $VERBOSE -log $LOG -loglevel $LOGLEVEL
+WorkingDirectory=/usr/share/domoticz
+# Give the right to open priviliged ports. This allows you to run on a port <1024 without root permissions (user/group setting above)
+#CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+
+[Install]
+WantedBy=multi-user.target

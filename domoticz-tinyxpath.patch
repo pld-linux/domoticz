@@ -1,0 +1,220 @@
+From 694241f7905967bf69af3a31265180c00b73e28c Mon Sep 17 00:00:00 2001
+From: Michael Cronenworth <mike@cchtml.com>
+Date: Fri, 11 Aug 2017 10:08:27 -0500
+Subject: [PATCH] build: Detect and allow external tinyxpath library usage
+
+Signed-off-by: Michael Cronenworth <mike@cchtml.com>
+---
+ CMakeLists.txt                             | 57 +++++++++++++++++++++---------
+ hardware/AnnaThermostat.cpp                |  3 +-
+ hardware/RAVEn.cpp                         |  3 +-
+ hardware/openzwave/control_panel/ozwcp.cpp |  3 +-
+ hardware/plugins/PluginManager.cpp         |  3 +-
+ hardware/plugins/Plugins.cpp               |  3 +-
+ main/LuaCommon.cpp                         |  7 +++-
+ main/LuaHandler.cpp                        |  3 +-
+ removed from Fedora patch msbuild/domoticz.vcxproj                   |  6 ++--
+ 9 files changed, 62 insertions(+), 26 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index bc231d8f6..334f203a6 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -451,22 +451,6 @@ webserver/proxyclient.cpp
+ json/json_reader.cpp
+ json/json_value.cpp
+ json/json_writer.cpp
+-tinyxpath/action_store.cpp
+-tinyxpath/htmlutil.cpp
+-tinyxpath/lex_util.cpp
+-tinyxpath/node_set.cpp
+-tinyxpath/tinystr.cpp
+-tinyxpath/tinyxml.cpp
+-tinyxpath/tinyxmlerror.cpp
+-tinyxpath/tinyxmlparser.cpp
+-tinyxpath/tokenlist.cpp
+-tinyxpath/xml_util.cpp
+-tinyxpath/xpath_expression.cpp
+-tinyxpath/xpath_processor.cpp
+-tinyxpath/xpath_stream.cpp
+-tinyxpath/xpath_stack.cpp
+-tinyxpath/xpath_static.cpp
+-tinyxpath/xpath_syntax.cpp
+ )
+ add_executable(domoticz ${domoticz_SRCS})
+ 
+@@ -538,6 +522,47 @@ else()
+   MESSAGE(STATUS "==== LibUSB not found, support for TE923/Voltcraft disabled!")
+ ENDIF(LIBUSB_FOUND)
+ 
++option(USE_BUILTIN_TINYXPATH "Use builtin tinyxpath library" YES)
++IF(USE_BUILTIN_TINYXPATH)
++  include_directories(tinyxpath)
++  target_sources(
++  domoticz
++  PUBLIC
++  tinyxpath/action_store.cpp
++  tinyxpath/htmlutil.cpp
++  tinyxpath/lex_util.cpp
++  tinyxpath/node_set.cpp
++  tinyxpath/tinystr.cpp
++  tinyxpath/tinyxml.cpp
++  tinyxpath/tinyxmlerror.cpp
++  tinyxpath/tinyxmlparser.cpp
++  tinyxpath/tokenlist.cpp
++  tinyxpath/xml_util.cpp
++  tinyxpath/xpath_expression.cpp
++  tinyxpath/xpath_processor.cpp
++  tinyxpath/xpath_stream.cpp
++  tinyxpath/xpath_stack.cpp
++  tinyxpath/xpath_static.cpp
++  tinyxpath/xpath_syntax.cpp
++  )
++else()
++  pkg_check_modules(TinyXML QUIET tinyxml)
++  IF(TinyXML_FOUND)
++    MESSAGE(STATUS "TinyXML found at: ${TinyXML_LIBRARIES}")
++    IF(EXISTS "/usr/include/tinyxpath/xpath_processor.h")
++      MESSAGE(STATUS "TinyXPath found")
++      target_link_libraries(domoticz ${TinyXML_LIBRARIES})
++      target_link_libraries(domoticz tinyxpath)
++      include_directories(/usr/include/tinyxpath)
++      add_definitions(-DWITH_EXTERNAL_TINYXPATH)
++    else()
++      MESSAGE(FATAL_ERROR "TinyXPath not found but USE_BUILTIN_TINYXPATH=NO")
++    ENDIF()
++  else()
++    MESSAGE(FATAL_ERROR "TinyXML not found but USE_BUILTIN_TINYXPATH=NO")
++  ENDIF(TinyXML_FOUND)
++ENDIF(USE_BUILTIN_TINYXPATH)
++
+ #
+ # Find MD5/RMD160/SHA library
+ #
+diff --git a/hardware/AnnaThermostat.cpp b/hardware/AnnaThermostat.cpp
+index 9c8cf26ef..9c91513ba 100644
+--- a/hardware/AnnaThermostat.cpp
++++ b/hardware/AnnaThermostat.cpp
+@@ -8,7 +8,8 @@
+ #include "../main/SQLHelper.h"
+ #include "../httpclient/HTTPClient.h"
+ #include "../main/mainworker.h"
+-#include "../tinyxpath/tinyxml.h"
++
++#include <tinyxml.h>
+ 
+ #define round(a) ( int ) ( a + .5 )
+ 
+diff --git a/hardware/RAVEn.cpp b/hardware/RAVEn.cpp
+index 3ffe4f724..36f97bffb 100644
+--- a/hardware/RAVEn.cpp
++++ b/hardware/RAVEn.cpp
+@@ -6,7 +6,8 @@
+ #include "../main/RFXtrx.h"
+ #include "../main/localtime_r.h"
+ #include "../main/mainworker.h"
+-#include "../tinyxpath/tinyxml.h"
++
++#include <tinyxml.h>
+ 
+ //Rainforest RAVEn USB ZigBee Smart Meter Adapter
+ //https://rainforestautomation.com/rfa-z106-raven/
+diff --git a/hardware/openzwave/control_panel/ozwcp.cpp b/hardware/openzwave/control_panel/ozwcp.cpp
+index 9a948c976..8fd4f77f0 100644
+--- a/hardware/openzwave/control_panel/ozwcp.cpp
++++ b/hardware/openzwave/control_panel/ozwcp.cpp
+@@ -45,11 +45,10 @@
+ #include "Group.h"
+ #include "Notification.h"
+ 
+-#include "../../tinyxpath/tinyxml.h"
+-
+ #include <sys/stat.h>
+ #include <fstream>
+ #include <iostream>
++#include <tinyxml.h>
+ 
+ //#include "microhttpd.h"
+ #include "ozwcp.h"
+diff --git a/hardware/plugins/PluginManager.cpp b/hardware/plugins/PluginManager.cpp
+index ea7bbe48a..9af41e42e 100644
+--- a/hardware/plugins/PluginManager.cpp
++++ b/hardware/plugins/PluginManager.cpp
+@@ -5,6 +5,8 @@
+ //
+ #ifdef ENABLE_PYTHON
+ 
++#include <tinyxml.h>
++
+ #include "PluginManager.h"
+ #include "Plugins.h"
+ #include "PluginMessages.h"
+@@ -17,7 +19,6 @@
+ #include "../main/mainworker.h"
+ #include "../main/EventSystem.h"
+ #include "../json/json.h"
+-#include "../tinyxpath/tinyxml.h"
+ #include "../main/localtime_r.h"
+ #ifdef WIN32
+ #	include <direct.h>
+diff --git a/hardware/plugins/Plugins.cpp b/hardware/plugins/Plugins.cpp
+index dc2420d6a..8cba255a2 100644
+--- a/hardware/plugins/Plugins.cpp
++++ b/hardware/plugins/Plugins.cpp
+@@ -5,6 +5,8 @@
+ //
+ #ifdef ENABLE_PYTHON
+ 
++#include <tinyxml.h>
++
+ #include "Plugins.h"
+ #include "PluginMessages.h"
+ #include "PluginProtocols.h"
+@@ -15,7 +17,6 @@
+ #include "../main/Logger.h"
+ #include "../main/SQLHelper.h"
+ #include "../main/mainworker.h"
+-#include "../tinyxpath/tinyxml.h"
+ #include "../main/localtime_r.h"
+ 
+ #include "../../notifications/NotificationHelper.h"
+diff --git a/main/LuaCommon.cpp b/main/LuaCommon.cpp
+index ec99429a5..76085aed6 100644
+--- a/main/LuaCommon.cpp
++++ b/main/LuaCommon.cpp
+@@ -16,7 +16,8 @@ extern "C" {
+ #endif
+ }
+ 
+-#include "../tinyxpath/xpath_processor.h"
++#include <xpath_processor.h>
++
+ #include "../json/json.h"
+ #include "SQLHelper.h"
+ #include "mainworker.h"
+@@ -44,7 +45,11 @@ int CLuaCommon::l_domoticz_applyXPath(lua_State* lua_state)
+ 				return 0;
+ 			}
+ 			TinyXPath::xpath_processor processor(root, xpath.c_str());
++#ifdef WITH_EXTERNAL_TINYXPATH
++			TIXML_STRING xresult = processor.S_compute_xpath();
++#else
+ 			TiXmlString xresult = processor.S_compute_xpath();
++#endif
+ 			lua_pushstring(lua_state, xresult.c_str());
+ 			return 1;
+ 		}
+diff --git a/main/LuaHandler.cpp b/main/LuaHandler.cpp
+index 8fdcb278b..a66cafee7 100644
+--- a/main/LuaHandler.cpp
++++ b/main/LuaHandler.cpp
+@@ -16,7 +16,8 @@ extern "C" {
+ #endif
+ }
+ 
+-#include "../tinyxpath/xpath_processor.h"
++#include <xpath_processor.h>
++
+ #include "../json/json.h"
+ #include "SQLHelper.h"
+ #include "mainworker.h"

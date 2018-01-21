@@ -1,0 +1,76 @@
+From f7b229ce873ff71e2b48e855075153dc1026750d Mon Sep 17 00:00:00 2001
+From: Michael Cronenworth <mike@cchtml.com>
+Date: Mon, 7 Aug 2017 14:37:28 -0500
+Subject: [PATCH] Follow PEP-384 when finding and opening python3 library
+
+Instead of maintaining a list of all Python versions the Python 3
+standard defines that there MUST be a stable ABI and we can always
+rely on a "python3.dll" or a "libpython3.so" existing.
+
+This also fixes library loading on Linux distributions that use
+SO versioned libraries.
+---
+ hardware/plugins/DelayedLink.h | 28 ++--------------------------
+ 1 file changed, 2 insertions(+), 26 deletions(-)
+
+diff --git a/hardware/plugins/DelayedLink.h b/hardware/plugins/DelayedLink.h
+index 25c83f034..ecf19da09 100644
+--- a/hardware/plugins/DelayedLink.h
++++ b/hardware/plugins/DelayedLink.h
+@@ -126,16 +126,10 @@ namespace Plugins {
+ 				if (!shared_lib_) shared_lib_ = LoadLibrary("python35_d.dll");
+ 				if (!shared_lib_) shared_lib_ = LoadLibrary("python34_d.dll");
+ #	else
+-				if (!shared_lib_) shared_lib_ = LoadLibrary("python37.dll");
+-				if (!shared_lib_) shared_lib_ = LoadLibrary("python36.dll");
+-				if (!shared_lib_) shared_lib_ = LoadLibrary("python35.dll");
+-				if (!shared_lib_) shared_lib_ = LoadLibrary("python34.dll");
++				if (!shared_lib_) shared_lib_ = LoadLibrary("python3.dll");
+ #	endif
+ #else
+-				if (!shared_lib_) FindLibrary("python3.7", true);
+-				if (!shared_lib_) FindLibrary("python3.6", true);
+-				if (!shared_lib_) FindLibrary("python3.5", true);
+-				if (!shared_lib_) FindLibrary("python3.4", true);
++				if (!shared_lib_) FindLibrary("python3", true);
+ #endif
+ 				if (shared_lib_)
+ 				{
+@@ -232,24 +226,12 @@ namespace Plugins {
+ 						library = "lib" + sLibrary + ".so";
+ 						shared_lib_ = dlopen(library.c_str(), RTLD_LAZY | RTLD_GLOBAL);
+ 					}
+-					// look in directories covered by ldconfig but 'm' variant
+-					if (!shared_lib_)
+-					{
+-						library = "lib" + sLibrary + "m.so";
+-						shared_lib_ = dlopen(library.c_str(), RTLD_LAZY | RTLD_GLOBAL);
+-					}
+ 					// look in /usr/lib directories
+ 					if (!shared_lib_)
+ 					{
+ 						library = "/usr/lib/" + sLibrary + "/";
+ 						FindLibrary(library, false);
+ 					}
+-					// look in /usr/lib directories but 'm' variant
+-					if (!shared_lib_)
+-					{
+-						library = "/usr/lib/" + sLibrary + "m/";
+-						FindLibrary(library, false);
+-					}
+ 					// look in /usr/local/lib directory (handles build from source)
+ 					if (!shared_lib_)
+ 					{
+@@ -257,12 +239,6 @@ namespace Plugins {
+ 						shared_lib_ = dlopen(library.c_str(), RTLD_LAZY | RTLD_GLOBAL);
+ 
+ 					}
+-					// look in /usr/local/lib directory (handles build from source) but 'm' variant
+-					if (!shared_lib_)
+-					{
+-						library = "/usr/local/lib/lib" + sLibrary + "m.so";
+-						shared_lib_ = dlopen(library.c_str(), RTLD_LAZY | RTLD_GLOBAL);
+-					}
+ 				}
+ 				else
+ 				{
