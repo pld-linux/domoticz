@@ -6,13 +6,13 @@ Subject: [PATCH] build: Detect and allow external tinyxpath library usage
 Signed-off-by: Michael Cronenworth <mike@cchtml.com>
 ---
  CMakeLists.txt                             | 57 +++++++++++++++++++++---------
- hardware/AnnaThermostat.cpp                |  3 +-
- hardware/RAVEn.cpp                         |  3 +-
- hardware/openzwave/control_panel/ozwcp.cpp |  3 +-
- hardware/plugins/PluginManager.cpp         |  3 +-
- hardware/plugins/Plugins.cpp               |  3 +-
- main/LuaCommon.cpp                         |  7 +++-
- main/LuaHandler.cpp                        |  3 +-
+ removed from Fedora patch hardware/AnnaThermostat.cpp                |  3 +-
+ removed from Fedora patch hardware/RAVEn.cpp                         |  3 +-
+ removed from Fedora patch hardware/openzwave/control_panel/ozwcp.cpp |  3 +-
+ removed from Fedora patch hardware/plugins/PluginManager.cpp         |  3 +-
+ removed from Fedora patch hardware/plugins/Plugins.cpp               |  3 +-
+ removed from Fedora patch main/LuaCommon.cpp                         |  7 +++-
+ removed from Fedora patch main/LuaHandler.cpp                        |  3 +-
  removed from Fedora patch msbuild/domoticz.vcxproj                   |  6 ++--
  9 files changed, 62 insertions(+), 26 deletions(-)
 
@@ -20,7 +20,7 @@ diff --git a/CMakeLists.txt b/CMakeLists.txt
 index bc231d8f6..334f203a6 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -451,22 +451,6 @@ webserver/proxyclient.cpp
+@@ -512,22 +512,6 @@
  json/json_reader.cpp
  json/json_value.cpp
  json/json_writer.cpp
@@ -43,9 +43,9 @@ index bc231d8f6..334f203a6 100644
  )
  add_executable(domoticz ${domoticz_SRCS})
  
-@@ -538,6 +522,47 @@ else()
-   MESSAGE(STATUS "==== LibUSB not found, support for TE923/Voltcraft disabled!")
- ENDIF(LIBUSB_FOUND)
+@@ -658,6 +642,47 @@
+   ENDIF(LIBUSB_FOUND)
+ endif(WITH_LIBUSB)
  
 +option(USE_BUILTIN_TINYXPATH "Use builtin tinyxpath library" YES)
 +IF(USE_BUILTIN_TINYXPATH)
@@ -88,133 +88,27 @@ index bc231d8f6..334f203a6 100644
 +  ENDIF(TinyXML_FOUND)
 +ENDIF(USE_BUILTIN_TINYXPATH)
 +
- #
- # Find MD5/RMD160/SHA library
- #
-diff --git a/hardware/AnnaThermostat.cpp b/hardware/AnnaThermostat.cpp
-index 9c8cf26ef..9c91513ba 100644
---- a/hardware/AnnaThermostat.cpp
-+++ b/hardware/AnnaThermostat.cpp
-@@ -8,7 +8,8 @@
- #include "../main/SQLHelper.h"
- #include "../httpclient/HTTPClient.h"
- #include "../main/mainworker.h"
--#include "../tinyxpath/tinyxml.h"
-+
-+#include <tinyxml.h>
- 
- #define round(a) ( int ) ( a + .5 )
- 
-diff --git a/hardware/RAVEn.cpp b/hardware/RAVEn.cpp
-index 3ffe4f724..36f97bffb 100644
---- a/hardware/RAVEn.cpp
-+++ b/hardware/RAVEn.cpp
-@@ -6,7 +6,8 @@
- #include "../main/RFXtrx.h"
- #include "../main/localtime_r.h"
- #include "../main/mainworker.h"
--#include "../tinyxpath/tinyxml.h"
-+
-+#include <tinyxml.h>
- 
- //Rainforest RAVEn USB ZigBee Smart Meter Adapter
- //https://rainforestautomation.com/rfa-z106-raven/
-diff --git a/hardware/openzwave/control_panel/ozwcp.cpp b/hardware/openzwave/control_panel/ozwcp.cpp
-index 9a948c976..8fd4f77f0 100644
---- a/hardware/openzwave/control_panel/ozwcp.cpp
-+++ b/hardware/openzwave/control_panel/ozwcp.cpp
-@@ -45,11 +45,10 @@
- #include "Group.h"
- #include "Notification.h"
- 
--#include "../../tinyxpath/tinyxml.h"
--
- #include <sys/stat.h>
- #include <fstream>
- #include <iostream>
-+#include <tinyxml.h>
- 
- //#include "microhttpd.h"
- #include "ozwcp.h"
-diff --git a/hardware/plugins/PluginManager.cpp b/hardware/plugins/PluginManager.cpp
-index ea7bbe48a..9af41e42e 100644
---- a/hardware/plugins/PluginManager.cpp
-+++ b/hardware/plugins/PluginManager.cpp
-@@ -5,6 +5,8 @@
- //
- #ifdef ENABLE_PYTHON
- 
-+#include <tinyxml.h>
-+
- #include "PluginManager.h"
- #include "Plugins.h"
- #include "PluginMessages.h"
-@@ -17,7 +19,6 @@
- #include "../main/mainworker.h"
- #include "../main/EventSystem.h"
- #include "../json/json.h"
--#include "../tinyxpath/tinyxml.h"
- #include "../main/localtime_r.h"
- #ifdef WIN32
- #	include <direct.h>
-diff --git a/hardware/plugins/Plugins.cpp b/hardware/plugins/Plugins.cpp
-index dc2420d6a..8cba255a2 100644
---- a/hardware/plugins/Plugins.cpp
-+++ b/hardware/plugins/Plugins.cpp
-@@ -5,6 +5,8 @@
- //
- #ifdef ENABLE_PYTHON
- 
-+#include <tinyxml.h>
-+
- #include "Plugins.h"
- #include "PluginMessages.h"
- #include "PluginProtocols.h"
-@@ -15,7 +17,6 @@
+ ## support lua popen on Linux platforms
+ #IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+ # SET(OperatingSystem "Linux")
+--- a/hardware/OnkyoAVTCP.cpp	2018-06-23 09:18:06.000000000 -0500
++++ b/hardware/OnkyoAVTCP.cpp	2018-07-08 14:21:06.884163094 -0500
+@@ -3,16 +3,16 @@
  #include "../main/Logger.h"
+ #include "../main/Helper.h"
  #include "../main/SQLHelper.h"
- #include "../main/mainworker.h"
--#include "../tinyxpath/tinyxml.h"
+-#include <iostream>
  #include "../main/localtime_r.h"
- 
- #include "../../notifications/NotificationHelper.h"
-diff --git a/main/LuaCommon.cpp b/main/LuaCommon.cpp
-index ec99429a5..76085aed6 100644
---- a/main/LuaCommon.cpp
-+++ b/main/LuaCommon.cpp
-@@ -16,7 +16,8 @@ extern "C" {
- #endif
- }
- 
--#include "../tinyxpath/xpath_processor.h"
-+#include <xpath_processor.h>
-+
+ #include "../main/mainworker.h"
+ #include "../hardware/hardwaretypes.h"
  #include "../json/json.h"
- #include "SQLHelper.h"
- #include "mainworker.h"
-@@ -44,7 +45,11 @@ int CLuaCommon::l_domoticz_applyXPath(lua_State* lua_state)
- 				return 0;
- 			}
- 			TinyXPath::xpath_processor processor(root, xpath.c_str());
-+#ifdef WITH_EXTERNAL_TINYXPATH
-+			TIXML_STRING xresult = processor.S_compute_xpath();
-+#else
- 			TiXmlString xresult = processor.S_compute_xpath();
-+#endif
- 			lua_pushstring(lua_state, xresult.c_str());
- 			return 1;
- 		}
-diff --git a/main/LuaHandler.cpp b/main/LuaHandler.cpp
-index 8fdcb278b..a66cafee7 100644
---- a/main/LuaHandler.cpp
-+++ b/main/LuaHandler.cpp
-@@ -16,7 +16,8 @@ extern "C" {
- #endif
- }
+-#include "../tinyxpath/tinyxml.h"
+ #include "../main/WebServer.h"
  
--#include "../tinyxpath/xpath_processor.h"
-+#include <xpath_processor.h>
-+
- #include "../json/json.h"
- #include "SQLHelper.h"
- #include "mainworker.h"
++#include <iostream>
+ #include <sstream>
+ #include <map>
++#include <tinyxml.h>
+ 
+ #define RETRY_DELAY 30
+ 

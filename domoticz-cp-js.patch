@@ -1,0 +1,17 @@
+--- a/www/ozwcp/cp.js	2017-07-30 05:19:41.000000000 -0500
++++ b/www/ozwcp/cp.js	2018-02-22 17:14:52.185486298 -0600
+@@ -241,7 +241,13 @@
+ 	    var current = values[j].getAttribute('current');
+ 	    nodes[id].values[k].value = new Array();
+ 	    for (var l = 0; l < items.length; l++) {
+-	      nodes[id].values[k].value[l] = {item: items[l].firstChild.nodeValue, selected: (current == items[l].firstChild.nodeValue)};
++              var firstChild = items[l].firstChild;
++              var nodeValue;
++              if (firstChild == null)
++                nodeValue = '';
++              else
++                nodeValue = firstChild.nodeValue;
++	      nodes[id].values[k].value[l] = {item: nodeValue, selected: (current == nodeValue)};
+ 	    }
+ 	  } else if (values[j].firstChild != null)
+ 	    nodes[id].values[k].value = values[j].firstChild.nodeValue;
