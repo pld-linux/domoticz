@@ -95,15 +95,16 @@ rm -rf tinyxpath/
 %build
 install -d build && cd build
 %cmake \
-      -DUSE_STATIC_LIBSTDCXX=NO \
-      -DUSE_STATIC_OPENZWAVE=NO \
-      -DUSE_BUILTIN_LUA=NO \
-      -DUSE_BUILTIN_MQTT=NO \
-      -DUSE_BUILTIN_SQLITE=NO \
-      -DUSE_BUILTIN_TINYXPATH=NO \
-      -DUSE_STATIC_BOOST=NO \
-      -DCMAKE_INSTALL_PREFIX=%{_datadir}/%{name} \
-      ..
+	-DUSE_OPENSSL_STATIC=NO \
+	-DUSE_STATIC_LIBSTDCXX=NO \
+	-DUSE_STATIC_OPENZWAVE=NO \
+	-DUSE_BUILTIN_LUA=NO \
+	-DUSE_BUILTIN_MQTT=NO \
+	-DUSE_BUILTIN_SQLITE=NO \
+	-DUSE_BUILTIN_TINYXPATH=NO \
+	-DUSE_STATIC_BOOST=NO \
+	-DCMAKE_INSTALL_PREFIX=%{_datadir}/%{name} \
+	..
 
 %{__make}
 
