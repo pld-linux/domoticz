@@ -1,7 +1,7 @@
 Summary:	Open source Home Automation System
 Name:		domoticz
 Version:	4.9700
-Release:	2
+Release:	3
 License:	GPLv3+ and ASL 2.0 and Boost and BSD and MIT
 Group:		Base
 URL:		http://www.domoticz.com
@@ -21,6 +21,7 @@ Patch4:		%{name}-openzwave-Dev.patch
 Patch5:		%{name}-python.patch
 Patch6:		domoticz-ozw-barrier-support-0002.patch
 Patch7:		domoticz-cp-js.patch
+Patch8:		boost-1.70.patch
 BuildRequires:	boost-devel
 BuildRequires:	cmake
 BuildRequires:	curl-devel
@@ -84,6 +85,7 @@ and much more. Notifications/Alerts can be sent to any mobile device
 %patch5 -p1 -b.python
 %patch6 -p1
 %patch7 -p1
+%patch8 -p1
 rm -f hardware/openzwave/*.h
 rm -rf hardware/openzwave/aes
 rm -rf hardware/openzwave/command_classes
