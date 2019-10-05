@@ -1,15 +1,15 @@
 Summary:	Open source Home Automation System
 Name:		domoticz
-Version:	4.9700
-Release:	3
+Version:	4.10717
+Release:	1
 License:	GPLv3+ and ASL 2.0 and Boost and BSD and MIT
 Group:		Base
 URL:		http://www.domoticz.com
 Source0:	https://github.com/domoticz/domoticz/archive/%{version}.tar.gz
-# Source0-md5:	726d838d5d80eed4335b0dfeefb2af6c
+# Source0-md5:	1d5f5572ae43379a6d62023cb8da0e9b
 Source1:	%{name}.service
 Source2:	%{name}.conf
-# Source says its version 3.5876, but it's really 3.8153
+# Source says its version 4.9700, but it's really 4.10717
 Patch1:		%{name}-version.patch
 # Use system tinyxpath (https://github.com/domoticz/domoticz/pull/1759)
 Patch2:		%{name}-tinyxpath.patch
@@ -21,7 +21,6 @@ Patch4:		%{name}-openzwave-Dev.patch
 Patch5:		%{name}-python.patch
 Patch6:		domoticz-ozw-barrier-support-0002.patch
 Patch7:		domoticz-cp-js.patch
-Patch8:		boost-1.70.patch
 BuildRequires:	boost-devel
 BuildRequires:	cmake
 BuildRequires:	curl-devel
@@ -81,11 +80,10 @@ and much more. Notifications/Alerts can be sent to any mobile device
 %patch1 -p1 -b.version
 %patch2 -p1 -b.tinyxpath
 %patch3 -p1 -b.openzwave
-%patch4 -p1 -b.openzwave-Dev
+#%patch4 -p1 -b.openzwave-Dev
 %patch5 -p1 -b.python
 %patch6 -p1
 %patch7 -p1
-%patch8 -p1
 rm -f hardware/openzwave/*.h
 rm -rf hardware/openzwave/aes
 rm -rf hardware/openzwave/command_classes

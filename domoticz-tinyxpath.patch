@@ -93,7 +93,7 @@ index bc231d8f6..334f203a6 100644
  # SET(OperatingSystem "Linux")
 --- a/hardware/OnkyoAVTCP.cpp	2018-06-23 09:18:06.000000000 -0500
 +++ b/hardware/OnkyoAVTCP.cpp	2018-07-08 14:21:06.884163094 -0500
-@@ -3,16 +3,16 @@
+@@ -3,15 +3,15 @@
  #include "../main/Logger.h"
  #include "../main/Helper.h"
  #include "../main/SQLHelper.h"
@@ -107,7 +107,6 @@ index bc231d8f6..334f203a6 100644
  
 +#include <iostream>
  #include <sstream>
- #include <map>
 +#include <tinyxml.h>
  
  #define RETRY_DELAY 30
