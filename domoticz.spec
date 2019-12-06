@@ -1,7 +1,7 @@
 Summary:	Open source Home Automation System
 Name:		domoticz
 Version:	4.10717
-Release:	3
+Release:	4
 License:	GPLv3+ and ASL 2.0 and Boost and BSD and MIT
 Group:		Base
 URL:		http://www.domoticz.com
