@@ -164,7 +164,7 @@ usermod -G domoticz,dialout domoticz
 %systemd_preun %{name}.service
 
 %postun
-%systemd_postun_with_restart %{name}.service
+%systemd_reload
 
 %files
 %defattr(644,root,root,755)
