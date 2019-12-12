@@ -1,7 +1,23 @@
-diff -urN domoticz-4.10717.orig/hardware/plugins/DelayedLink.h domoticz-4.10717/hardware/plugins/DelayedLink.h
---- domoticz-4.10717.orig/hardware/plugins/DelayedLink.h	2019-05-10 11:37:55.000000000 +0200
-+++ domoticz-4.10717/hardware/plugins/DelayedLink.h	2019-10-05 19:05:40.930495976 +0200
-@@ -145,18 +145,10 @@
+From f7b229ce873ff71e2b48e855075153dc1026750d Mon Sep 17 00:00:00 2001
+From: Michael Cronenworth <mike@cchtml.com>
+Date: Mon, 7 Aug 2017 14:37:28 -0500
+Subject: [PATCH] Follow PEP-384 when finding and opening python3 library
+
+Instead of maintaining a list of all Python versions the Python 3
+standard defines that there MUST be a stable ABI and we can always
+rely on a "python3.dll" or a "libpython3.so" existing.
+
+This also fixes library loading on Linux distributions that use
+SO versioned libraries.
+---
+ hardware/plugins/DelayedLink.h | 28 ++--------------------------
+ 1 file changed, 2 insertions(+), 26 deletions(-)
+
+diff --git a/hardware/plugins/DelayedLink.h b/hardware/plugins/DelayedLink.h
+index 25c83f034..ecf19da09 100644
+--- a/hardware/plugins/DelayedLink.h
++++ b/hardware/plugins/DelayedLink.h
+@@ -150,18 +150,10 @@
  				if (!shared_lib_) shared_lib_ = LoadLibrary("python35_d.dll");
  				if (!shared_lib_) shared_lib_ = LoadLibrary("python34_d.dll");
  #	else
@@ -19,9 +35,9 @@ diff -urN domoticz-4.10717.orig/hardware/plugins/DelayedLink.h domoticz-4.10717/
 -				if (!shared_lib_) FindLibrary("python3.5", true);
 -				if (!shared_lib_) FindLibrary("python3.4", true);
 +				if (!shared_lib_) FindLibrary("python3", true);
- #endif
- 				if (shared_lib_)
- 				{
+ #ifdef __FreeBSD__
+ 				if (!shared_lib_) FindLibrary("python3.7m", true);
+ 				if (!shared_lib_) FindLibrary("python3.6m", true);
 @@ -271,24 +263,12 @@
  						library = "lib" + sLibrary + ".so";
  						shared_lib_ = dlopen(library.c_str(), RTLD_LAZY | RTLD_GLOBAL);
@@ -60,67 +76,3 @@ diff -urN domoticz-4.10717.orig/hardware/plugins/DelayedLink.h domoticz-4.10717/
  					// MacOS
  					// look for .dylib in /usr/local/lib
  					if (!shared_lib_)
-From e9bd383ceb63db7cfe8a284014f0cdf8c2bfe4f0 Mon Sep 17 00:00:00 2001
-From: Fabrice Fontaine <fontaine.fabrice@gmail.com>
-Date: Fri, 1 Nov 2019 10:54:11 +0100
-Subject: [PATCH] DelayedLink.h: fix build with python 3.8
-
-Fix build with python 3.8 by copy/pasting the vim workaround from
-https://github.com/vim/vim/commit/13a1f3fb0c9d08bba6109fe2131c9524e6ba7e15
-
-Fix 3703
-
-Signed-off-by: Fabrice Fontaine <fontaine.fabrice@gmail.com>
----
- hardware/plugins/DelayedLink.h | 38 ++++++++++++++++++++++++++++++++++
- 1 file changed, 38 insertions(+)
-
-diff --git a/hardware/plugins/DelayedLink.h b/hardware/plugins/DelayedLink.h
-index 4bf1973281..c90a7d8e69 100644
---- a/hardware/plugins/DelayedLink.h
-+++ b/hardware/plugins/DelayedLink.h
-@@ -14,6 +14,44 @@
- #include <frameobject.h>
- #include "../../main/Helper.h"
- 
-+#if PY_VERSION_HEX >= 0x030800f0
-+static inline void
-+py3__Py_DECREF(const char *filename, int lineno, PyObject *op)
-+{
-+	(void)filename; /* may be unused, shut up -Wunused-parameter */
-+	(void)lineno; /* may be unused, shut up -Wunused-parameter */
-+	_Py_DEC_REFTOTAL;
-+	if (--op->ob_refcnt != 0)
-+	{
-+#ifdef Py_REF_DEBUG
-+	if (op->ob_refcnt < 0)
-+	{
-+		_Py_NegativeRefcount(filename, lineno, op);
-+	}
-+#endif
-+	}
-+	else
-+	{
-+		_Py_Dealloc(op);
-+	}
-+}
-+
-+#undef Py_DECREF
-+#define Py_DECREF(op) py3__Py_DECREF(__FILE__, __LINE__, _PyObject_CAST(op))
-+
-+static inline void
-+py3__Py_XDECREF(PyObject *op)
-+{
-+	if (op != NULL)
-+	{
-+		Py_DECREF(op);
-+	}
-+}
-+
-+#undef Py_XDECREF
-+#define Py_XDECREF(op) py3__Py_XDECREF(_PyObject_CAST(op))
-+#endif
-+
- namespace Plugins {
- 
- #ifdef WIN32

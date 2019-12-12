@@ -1,18 +1,33 @@
-diff -urN domoticz-4.10717.orig/CMakeLists.txt domoticz-4.10717/CMakeLists.txt
---- domoticz-4.10717.orig/CMakeLists.txt	2019-05-10 11:37:55.000000000 +0200
-+++ domoticz-4.10717/CMakeLists.txt	2019-10-05 12:18:52.336750288 +0200
-@@ -689,7 +689,7 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 42082192..f16726f8 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -298,9 +298,9 @@
+ ADD_CUSTOM_TARGET(revisiontag ALL)
+ 
+ # creates appversion.h using cmake script
+-ADD_CUSTOM_COMMAND(TARGET revisiontag COMMAND ${CMAKE_COMMAND}
+-   -DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
+-   -P ${CMAKE_CURRENT_SOURCE_DIR}/getgit.cmake)
++#ADD_CUSTOM_COMMAND(TARGET revisiontag COMMAND ${CMAKE_COMMAND}
++#   -DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
++#   -P ${CMAKE_CURRENT_SOURCE_DIR}/getgit.cmake)
+ 
+ ## Target
+ set(
+@@ -700,7 +700,7 @@
  IF(OpenZWave)
    message(STATUS ${OpenZWave})
    target_link_libraries(domoticz ${OpenZWave})
 -  include_directories(${CMAKE_SOURCE_DIR}/hardware/openzwave)
 +  include_directories(${OPENZWAVE_INCLUDE_DIRS})
    add_definitions(-DWITH_OPENZWAVE)
-   # open-zwave needs libudev if statically linked
-   IF(USE_STATIC_OPENZWAVE)
-diff -urN domoticz-4.10717.orig/hardware/openzwave/control_panel/ozwcp.cpp domoticz-4.10717/hardware/openzwave/control_panel/ozwcp.cpp
---- domoticz-4.10717.orig/hardware/openzwave/control_panel/ozwcp.cpp	2019-05-10 11:37:55.000000000 +0200
-+++ domoticz-4.10717/hardware/openzwave/control_panel/ozwcp.cpp	2019-10-05 12:13:41.340069579 +0200
+ ELSE()
+   MESSAGE(STATUS "==== OpenZWave not found, support disabled!")
+diff --git a/hardware/openzwave/control_panel/ozwcp.cpp b/hardware/openzwave/control_panel/ozwcp.cpp
+index ffd8d742..79c708ce 100644
+--- a/hardware/openzwave/control_panel/ozwcp.cpp
++++ b/hardware/openzwave/control_panel/ozwcp.cpp
 @@ -39,11 +39,11 @@
  #include <stdlib.h>
  #include <time.h>
@@ -27,12 +42,13 @@ diff -urN domoticz-4.10717.orig/hardware/openzwave/control_panel/ozwcp.cpp domot
 +#include <Node.h>
 +#include <Group.h>
 +#include <Notification.h>
+ #include "..//main/Logger.h"
  
  #include <sys/stat.h>
- #include <fstream>
-diff -urN domoticz-4.10717.orig/hardware/openzwave/control_panel/ozwcp.h domoticz-4.10717/hardware/openzwave/control_panel/ozwcp.h
---- domoticz-4.10717.orig/hardware/openzwave/control_panel/ozwcp.h	2019-05-10 11:37:55.000000000 +0200
-+++ domoticz-4.10717/hardware/openzwave/control_panel/ozwcp.h	2019-10-05 12:14:19.620071306 +0200
+diff --git a/hardware/openzwave/control_panel/ozwcp.h b/hardware/openzwave/control_panel/ozwcp.h
+index 29ebc0e3..7a027815 100644
+--- a/hardware/openzwave/control_panel/ozwcp.h
++++ b/hardware/openzwave/control_panel/ozwcp.h
 @@ -37,8 +37,8 @@
  
  #include <list>
