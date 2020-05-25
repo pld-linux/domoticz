@@ -1,16 +1,12 @@
-%define		snap	d5e8a14bf
-%define		date	20191209
 Summary:	Open source Home Automation System
 Name:		domoticz
-Version:	4.11563
+Version:	2020.2
 Release:	1
 License:	GPLv3+ and ASL 2.0 and Boost and BSD and MIT
 Group:		Base
 URL:		http://www.domoticz.com
-# Source0:	https://github.com/domoticz/domoticz/archive/%{version}.tar.gz
-# https://www.domoticz.com/wiki/Domoticz_versions_-_Commits
-Source0:	https://github.com/domoticz/domoticz/archive/%{snap}.tar.gz
-# Source0-md5:	376611fe9d5a8fb7febd71be8addc4ce
+Source0:	https://github.com/domoticz/domoticz/archive/%{version}.tar.gz
+# Source0-md5:	fd383a13d13d0976c72f332d6db1d24e
 Source1:	%{name}.service
 Source2:	%{name}.conf
 
@@ -23,6 +19,7 @@ Patch4:		%{name}-openzwave-Dev.patch
 # Fix python detection (https://github.com/domoticz/domoticz/pull/1749)
 Patch5:		%{name}-python.patch
 BuildRequires:	boost-devel
+BuildRequires:	cereal-devel
 BuildRequires:	cmake
 BuildRequires:	curl-devel
 BuildRequires:	libmosquitto-devel
@@ -31,6 +28,7 @@ BuildRequires:	libopenzwave-devel >= 1.5.0
 BuildRequires:	libstdc++-devel
 BuildRequires:	libusb-devel
 BuildRequires:	lua-devel
+BuildRequires:	minizip-devel
 BuildRequires:	openssl-devel
 BuildRequires:	python3-devel
 BuildRequires:	sqlite-devel
@@ -77,8 +75,7 @@ sensors/meters like Temperature, Rain, Wind, UV, Electra, Gas, Water
 and much more. Notifications/Alerts can be sent to any mobile device
 
 %prep
-%setup -q -c
-mv %{name}-%{snap}*/* .
+%setup -q
 
 APPVERSION="%{version}"
 echo "#define APPVERSION ${APPVERSION##*.}" > appversion.h
@@ -105,7 +102,10 @@ install -d build && cd build
 	-DUSE_OPENSSL_STATIC=NO \
 	-DUSE_STATIC_LIBSTDCXX=NO \
 	-DUSE_STATIC_OPENZWAVE=NO \
+        -DUSE_OPENSSL_STATIC=NO \
+        -DUSE_BUILTIN_JSONCPP=NO \
 	-DUSE_BUILTIN_LUA=NO \
+        -DUSE_BUILTIN_MINIZIP=NO \
 	-DUSE_BUILTIN_MQTT=NO \
 	-DUSE_BUILTIN_SQLITE=NO \
 	-DUSE_BUILTIN_TINYXPATH=NO \

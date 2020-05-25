@@ -1,62 +1,19 @@
-diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 42082192..f16726f8 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -298,9 +298,9 @@
- ADD_CUSTOM_TARGET(revisiontag ALL)
- 
- # creates appversion.h using cmake script
--ADD_CUSTOM_COMMAND(TARGET revisiontag COMMAND ${CMAKE_COMMAND}
--   -DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
--   -P ${CMAKE_CURRENT_SOURCE_DIR}/getgit.cmake)
-+#ADD_CUSTOM_COMMAND(TARGET revisiontag COMMAND ${CMAKE_COMMAND}
-+#   -DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
-+#   -P ${CMAKE_CURRENT_SOURCE_DIR}/getgit.cmake)
- 
- ## Target
- set(
-@@ -700,7 +700,7 @@
- IF(OpenZWave)
-   message(STATUS ${OpenZWave})
+@@ -707,13 +707,9 @@
+   message(STATUS "OpenZWave library found at: ${OpenZWave}")
    target_link_libraries(domoticz ${OpenZWave})
--  include_directories(${CMAKE_SOURCE_DIR}/hardware/openzwave)
-+  include_directories(${OPENZWAVE_INCLUDE_DIRS})
-   add_definitions(-DWITH_OPENZWAVE)
- ELSE()
-   MESSAGE(STATUS "==== OpenZWave not found, support disabled!")
-diff --git a/hardware/openzwave/control_panel/ozwcp.cpp b/hardware/openzwave/control_panel/ozwcp.cpp
-index ffd8d742..79c708ce 100644
---- a/hardware/openzwave/control_panel/ozwcp.cpp
-+++ b/hardware/openzwave/control_panel/ozwcp.cpp
-@@ -39,11 +39,11 @@
- #include <stdlib.h>
- #include <time.h>
- #include <string.h>
--#include "../Options.h"
--#include "../Manager.h"
--#include "../Node.h"
--#include "../Group.h"
--#include "../Notification.h"
-+#include <Options.h>
-+#include <Manager.h>
-+#include <Node.h>
-+#include <Group.h>
-+#include <Notification.h>
- #include "..//main/Logger.h"
- 
- #include <sys/stat.h>
-diff --git a/hardware/openzwave/control_panel/ozwcp.h b/hardware/openzwave/control_panel/ozwcp.h
-index 29ebc0e3..7a027815 100644
---- a/hardware/openzwave/control_panel/ozwcp.h
-+++ b/hardware/openzwave/control_panel/ozwcp.h
-@@ -37,8 +37,8 @@
- 
- #include <list>
- #include <algorithm>
--#include "Driver.h"
--#include "Notification.h"
-+#include <Driver.h>
-+#include <Notification.h>
- 
- #define MAX_NODES 255
- 
+
+-  find_path(OPENZWAVE_INCLUDE_DIRS NAMES openzwave/Manager.h)
++  find_path(OPENZWAVE_INCLUDE_DIRS NAMES Manager.h)
+   if (OPENZWAVE_INCLUDE_DIRS)
+-    IF(CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
+-      include_directories(${OPENZWAVE_INCLUDE_DIRS})
+-    ELSE()
+-      include_directories(${OPENZWAVE_INCLUDE_DIRS}/openzwave)
+-    ENDIF()
++    include_directories(${OPENZWAVE_INCLUDE_DIRS})
+     message(STATUS "OpenZWave includes found at: ${OPENZWAVE_INCLUDE_DIRS}")
+   else()
+     message(FATAL_ERROR "OpenZWave includes not found. Did you not issue 'sudo make install' after building OpenZWave?")
+

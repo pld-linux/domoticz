@@ -20,10 +20,10 @@ diff --git a/CMakeLists.txt b/CMakeLists.txt
 index bc231d8f6..334f203a6 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -512,22 +512,6 @@
- json/json_reader.cpp
- json/json_value.cpp
- json/json_writer.cpp
+@@ -365,22 +365,6 @@
+ webserver/server.cpp
+ webserver/Websockets.cpp
+ webserver/WebsocketHandler.cpp
 -tinyxpath/action_store.cpp
 -tinyxpath/htmlutil.cpp
 -tinyxpath/lex_util.cpp
@@ -41,9 +41,9 @@ index bc231d8f6..334f203a6 100644
 -tinyxpath/xpath_static.cpp
 -tinyxpath/xpath_syntax.cpp
  )
- add_executable(domoticz ${domoticz_SRCS})
  
-@@ -658,6 +642,47 @@
+ add_executable(domoticz ${domoticz_SRCS})
+@@ -682,6 +666,47 @@
    ENDIF(LIBUSB_FOUND)
  endif(WITH_LIBUSB)
  
@@ -91,6 +91,75 @@ index bc231d8f6..334f203a6 100644
  ## support lua popen on Linux platforms
  #IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
  # SET(OperatingSystem "Linux")
+--- a/hardware/openzwave/control_panel/ozwcp.cpp	2020-03-22 09:16:16.000000000 -0500
++++ b/hardware/openzwave/control_panel/ozwcp.cpp	2020-03-24 10:53:04.968630391 -0500
+@@ -49,7 +49,7 @@
+ #include <sys/stat.h>
+ #include <fstream>
+ #include <iostream>
+-#include "../../../tinyxpath/tinyxml.h"
++#include <tinyxml.h>
+ 
+ //#include "microhttpd.h"
+ #include "ozwcp.h"
+--- a/hardware/plugins/PluginManager.cpp	2020-03-22 09:16:16.000000000 -0500
++++ b/hardware/plugins/PluginManager.cpp	2020-03-24 13:53:05.305852598 -0500
+@@ -21,11 +21,12 @@
+ #include "../../main/Logger.h"
+ #include "../../main/SQLHelper.h"
+ #include "../../main/WebServer.h"
+-#include "../../tinyxpath/tinyxml.h"
+ #ifdef WIN32
++#       include "../../tinyxpath/tinyxml.h"
+ #	include <direct.h>
+ #else
+ #	include <sys/stat.h>
++#       include <tinyxml.h>
+ #endif
+ 
+ #include "DelayedLink.h"
+--- a/hardware/plugins/Plugins.cpp	2020-03-22 09:16:16.000000000 -0500
++++ b/hardware/plugins/Plugins.cpp	2020-03-24 13:45:46.056965796 -0500
+@@ -16,10 +16,11 @@
+ #include "../../main/SQLHelper.h"
+ #include "../../main/mainworker.h"
+ #include "../../main/localtime_r.h"
+-#include "../../tinyxpath/tinyxml.h"
+ 
+ #include "../../notifications/NotificationHelper.h"
+ 
++#include <tinyxml.h>
++
+ #define ADD_STRING_TO_DICT(pDict, key, value) \
+ 		{	\
+ 			PyObject*	pObj = Py_BuildValue("s", value.c_str());	\
+--- a/hardware/AnnaThermostat.cpp	2020-03-22 09:16:16.000000000 -0500
++++ b/hardware/AnnaThermostat.cpp	2020-03-24 10:41:00.530030798 -0500
+@@ -9,7 +9,7 @@
+ #include "../httpclient/HTTPClient.h"
+ #include "../main/mainworker.h"
+ 
+-#include "../tinyxpath/tinyxml.h"
++#include <tinyxml.h>
+ 
+ #define round(a) ( int ) ( a + .5 )
+ 
+--- a/hardware/EcoDevices.cpp	2020-03-22 09:16:16.000000000 -0500
++++ b/hardware/EcoDevices.cpp	2020-03-24 10:47:20.095926641 -0500
+@@ -33,11 +33,11 @@
+ #include "hardwaretypes.h"
+ #include "../main/localtime_r.h"
+ #include "../httpclient/HTTPClient.h"
+-#include "../tinyxpath/tinyxml.h"
+-#include "../tinyxpath/xpath_static.h"
+ #include "../webserver/Base64.h"
+ #include "../main/json_helper.h"
+ #include <sstream>
++#include <tinyxml.h>
++#include <xpath_static.h>
+ 
+ #ifdef _DEBUG
+ #define DEBUG_EcoDevices
 --- a/hardware/OnkyoAVTCP.cpp	2018-06-23 09:18:06.000000000 -0500
 +++ b/hardware/OnkyoAVTCP.cpp	2018-07-08 14:21:06.884163094 -0500
 @@ -3,15 +3,15 @@
@@ -101,13 +170,26 @@ index bc231d8f6..334f203a6 100644
  #include "../main/localtime_r.h"
  #include "../main/mainworker.h"
  #include "../hardware/hardwaretypes.h"
- #include "../json/json.h"
+-#include <json/json.h>
 -#include "../tinyxpath/tinyxml.h"
  #include "../main/WebServer.h"
  
 +#include <iostream>
  #include <sstream>
++#include <json/json.h>
 +#include <tinyxml.h>
  
  #define RETRY_DELAY 30
  
+--- a/hardware/RAVEn.cpp	2020-03-22 09:16:16.000000000 -0500
++++ b/hardware/RAVEn.cpp	2020-03-24 12:55:59.616310732 -0500
+@@ -5,8 +5,8 @@
+ #include "../main/Logger.h"
+ #include "../main/mainworker.h"
+ #include "../main/RFXtrx.h"
+-#include "../tinyxpath/tinyxml.h"
+ #include "hardwaretypes.h"
++#include <tinyxml.h>
+ 
+ //Rainforest RAVEn USB ZigBee Smart Meter Adapter
+ //https://rainforestautomation.com/rfa-z106-raven/
