@@ -44,7 +44,19 @@
  endif()
 --- domoticz-2020.2/getgit.cmake.orig	2020-04-26 15:49:25.000000000 +0200
 +++ domoticz-2020.2/getgit.cmake	2020-06-06 12:19:42.567678153 +0200
-@@ -23,55 +23,11 @@
+@@ -2,11 +2,6 @@
+ # please take into account, that the variable 'SOURCE_DIR' has been defined by the caller
+ 
+ # the git.cmake module is part of the standard distribution
+-find_package(Git)
+-if(NOT GIT_FOUND)
+-  MESSAGE(FATAL_ERROR "Git not found!.")
+-endif()
+-
+ MACRO(History_GET_REVISION variable)
+   IF(EXISTS ${CMAKE_SOURCE_DIR}/History.txt)
+     MESSAGE(STATUS "Read ProjectRevision from History.txt")
+@@ -23,55 +18,11 @@
    ENDIF(EXISTS ${CMAKE_SOURCE_DIR}/History.txt)
  ENDMACRO(History_GET_REVISION)
  
