@@ -18,6 +18,7 @@ Patch3:		%{name}-openzwave.patch
 Patch4:		%{name}-openzwave-Dev.patch
 # Fix python detection (https://github.com/domoticz/domoticz/pull/1749)
 Patch5:		%{name}-python.patch
+Patch6:		no-git.patch
 BuildRequires:	boost-devel
 BuildRequires:	cereal-devel
 BuildRequires:	cmake
@@ -87,6 +88,7 @@ echo "#define APPDATE ${APPDATE}" >> appversion.h
 %patch3 -p1 -b.openzwave
 #%patch4 -p1 -b.openzwave-Dev
 %patch5 -p1 -b.python
+%patch6 -p1
 
 rm -f hardware/openzwave/*.h
 rm -rf hardware/openzwave/aes
