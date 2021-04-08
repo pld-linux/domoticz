@@ -9,17 +9,14 @@ Source0:	https://github.com/domoticz/domoticz/archive/%{version}.tar.gz
 # Source0-md5:	fd383a13d13d0976c72f332d6db1d24e
 Source1:	%{name}.service
 Source2:	%{name}.conf
-
 # Use system tinyxpath (https://github.com/domoticz/domoticz/pull/1759)
-Patch2:		%{name}-tinyxpath.patch
+Patch0:		%{name}-tinyxpath.patch
 # Use system openzwave includes
-Patch3:		%{name}-openzwave.patch
-# Work against Dev branch of OpenZWave upstream
-Patch4:		%{name}-openzwave-Dev.patch
+Patch1:		%{name}-openzwave.patch
 # Fix python detection (https://github.com/domoticz/domoticz/pull/1749)
-Patch5:		%{name}-python.patch
-Patch6:		no-git.patch
-Patch7:		boost-1.73.patch
+Patch2:		%{name}-python.patch
+Patch3:		no-git.patch
+Patch4:		boost-1.73.patch
 BuildRequires:	boost-devel >= 1.66.0
 BuildRequires:	cereal-devel
 BuildRequires:	cmake >= 3.16.0
@@ -82,19 +79,17 @@ and much more. Notifications/Alerts can be sent to any mobile device
 
 %prep
 %setup -q
+%patch0 -p1
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
 
 APPVERSION="%{version}"
 echo "#define APPVERSION ${APPVERSION##*.}" > appversion.h
 echo '#define APPHASH "%{snap}"' >> appversion.h
 APPDATE=$(date --date="%{date}" "+%s")
 echo "#define APPDATE ${APPDATE}" >> appversion.h
-
-%patch2 -p1 -b.tinyxpath
-%patch3 -p1 -b.openzwave
-#%patch4 -p1 -b.openzwave-Dev
-%patch5 -p1 -b.python
-%patch6 -p1
-%patch7 -p1
 
 rm -f hardware/openzwave/*.h
 rm -rf hardware/openzwave/aes
