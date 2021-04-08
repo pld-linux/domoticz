@@ -20,21 +20,24 @@ Patch4:		%{name}-openzwave-Dev.patch
 Patch5:		%{name}-python.patch
 Patch6:		no-git.patch
 Patch7:		boost-1.73.patch
-BuildRequires:	boost-devel
+BuildRequires:	boost-devel >= 1.66.0
 BuildRequires:	cereal-devel
-BuildRequires:	cmake
+BuildRequires:	cmake >= 3.16.0
 BuildRequires:	curl-devel
+BuildRequires:	jsoncpp-devel
 BuildRequires:	libmosquitto-devel
-BuildRequires:  libmosquittopp-devel
 BuildRequires:	libopenzwave-devel >= 1.5.0
-BuildRequires:	libstdc++-devel
-BuildRequires:	libusb-devel
-BuildRequires:	lua-devel
+BuildRequires:	libstdc++-devel >= 6:4.8.1
+BuildRequires:	libusb-compat-devel
+BuildRequires:	linux-libc-headers
+BuildRequires:	lua53-devel
 BuildRequires:	minizip-devel
 BuildRequires:	openssl-devel
-BuildRequires:	python3-devel
-BuildRequires:	sqlite-devel
-BuildRequires:	systemd-devel
+BuildRequires:	pkgconfig
+BuildRequires:	python3 >= 1:3.4
+BuildRequires:	python3-devel >= 1:3.4
+BuildRequires:	sqlite3-devel
+BuildRequires:	tinyxml-devel
 BuildRequires:	tinyxpath-devel
 BuildRequires:	zlib-devel
 Requires(pre):  /usr/sbin/groupadd
@@ -43,6 +46,7 @@ Requires(post):	systemd
 Requires(postun):	systemd
 Requires(preun):	systemd
 Requires:       fonts-TTF-Google-Droid
+Requires:	libopenzwave >= 1.5.0
 Provides:	bundled(js-ace)
 Provides:	bundled(js-angular-ui-bootstrap) = 0.13.4
 Provides:	bundled(js-angularamd) = 0.2.1
@@ -103,17 +107,16 @@ rm -rf tinyxpath/
 %build
 install -d build && cd build
 %cmake \
-	-DUSE_OPENSSL_STATIC=NO \
-	-DUSE_STATIC_LIBSTDCXX=NO \
-	-DUSE_STATIC_OPENZWAVE=NO \
-        -DUSE_OPENSSL_STATIC=NO \
-        -DUSE_BUILTIN_JSONCPP=NO \
-	-DUSE_BUILTIN_LUA=NO \
-        -DUSE_BUILTIN_MINIZIP=NO \
+	-DUSE_BUILTIN_JSONCPP=NO \
+	-DUSE_BUILTIN_MINIZIP=NO \
 	-DUSE_BUILTIN_MQTT=NO \
 	-DUSE_BUILTIN_SQLITE=NO \
 	-DUSE_BUILTIN_TINYXPATH=NO \
+	-DUSE_LUA_STATIC=NO \
+	-DUSE_OPENSSL_STATIC=NO \
 	-DUSE_STATIC_BOOST=NO \
+	-DUSE_STATIC_LIBSTDCXX=NO \
+	-DUSE_STATIC_OPENZWAVE=NO \
 	-DCMAKE_INSTALL_PREFIX=%{_datadir}/%{name} \
 	..
 
