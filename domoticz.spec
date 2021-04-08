@@ -44,6 +44,7 @@ Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
 Requires(post,preun,postun):	systemd-units >= 38
 Requires:	fonts-TTF-Google-Droid
+Requires:	fonts-TTF-OpenSans
 Requires:	libopenzwave >= 1.5.0
 Provides:	group(domoticz)
 Provides:	user(domoticz)
@@ -108,13 +109,19 @@ cp -p %{SOURCE1} $RPM_BUILD_ROOT%{systemdunitdir}
 cp -p %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
 
 # Unbundle DroidSans.ttf
-%{__rm} $RPM_BUILD_ROOT%{_datadir}/%{name}/www/styles/element{al,-light,-dark}/fonts/DroidSans.ttf
+%{__rm} $RPM_BUILD_ROOT%{_datadir}/%{name}/www/styles/element{al,-light,-dark}/fonts/{Droid,Open}Sans.ttf
 ln -s %{_fontsdir}/TTF/DroidSans.ttf \
 	$RPM_BUILD_ROOT%{_datadir}/%{name}/www/styles/elemental/fonts
+ln -s %{_fontsdir}/TTF/OpenSans-Regular.ttf \
+	$RPM_BUILD_ROOT%{_datadir}/%{name}/www/styles/elemental/fonts/OpenSans.ttf
 ln -s %{_fontsdir}/TTF/DroidSans.ttf \
 	$RPM_BUILD_ROOT%{_datadir}/%{name}/www/styles/element-light/fonts
+ln -s %{_fontsdir}/TTF/OpenSans-Regular.ttf \
+	$RPM_BUILD_ROOT%{_datadir}/%{name}/www/styles/element-light/fonts/OpenSans.ttf
 ln -s %{_fontsdir}/TTF/DroidSans.ttf \
 	$RPM_BUILD_ROOT%{_datadir}/%{name}/www/styles/element-dark/fonts
+ln -s %{_fontsdir}/TTF/OpenSans-Regular.ttf \
+	$RPM_BUILD_ROOT%{_datadir}/%{name}/www/styles/element-dark/fonts/OpenSans.ttf
 
 # OpenZWave Control Panel temp file
 ln -s %{_sharedstatedir}/%{name}/ozwcp.poll.XXXXXX.xml \
