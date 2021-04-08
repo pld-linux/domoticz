@@ -37,39 +37,11 @@ BuildRequires:	sqlite3-devel
 BuildRequires:	tinyxml-devel
 BuildRequires:	tinyxpath-devel
 BuildRequires:	zlib-devel
-Requires(pre):  /usr/sbin/groupadd
-Requires(pre):  /usr/sbin/useradd
-Requires(post):	systemd
-Requires(postun):	systemd
-Requires(preun):	systemd
-Requires:       fonts-TTF-Google-Droid
+Requires(pre):	/usr/sbin/groupadd
+Requires(pre):	/usr/sbin/useradd
+Requires(post,preun,postun):	systemd-units >= 38
+Requires:	fonts-TTF-Google-Droid
 Requires:	libopenzwave >= 1.5.0
-Provides:	bundled(js-ace)
-Provides:	bundled(js-angular-ui-bootstrap) = 0.13.4
-Provides:	bundled(js-angularamd) = 0.2.1
-Provides:	bundled(js-angularjs) = 1.5.8
-Provides:	bundled(js-blockly)
-Provides:	bundled(js-bootbox)
-Provides:	bundled(js-bootstrap) = 3.2.0
-Provides:	bundled(js-colpick)
-Provides:	bundled(js-d3)
-Provides:	bundled(js-datatables-datatools) = 2.2.3
-Provides:	bundled(js-dateformat) = 1.2.3
-Provides:	bundled(js-filesaver) = 0.0-git20140725
-Provides:	bundled(js-highcharts) = 4.2.6
-Provides:	bundled(js-html5shiv) = 3.6.2
-Provides:	bundled(js-i18next) = 1.8.0
-Provides:	bundled(js-ion-sound) = 3.0.6
-Provides:	bundled(js-jquery) = 1.12.0
-Provides:	bundled(js-jquery-noty) = 2.1.0
-Provides:	bundled(js-less) = 1.3.0
-Provides:	bundled(js-ngdraggable)
-Provides:	bundled(js-nggrid)
-Provides:	bundled(js-ozwcp)
-Provides:	bundled(js-require) = 2.1.14
-Provides:	bundled(js-respond) = 1.1.0
-Provides:	bundled(js-wow) = 0.1.9
-Provides:	bundled(js-zeroclipboard) = 1.0.4
 
 %description
 Domoticz is a Home Automation System that lets you monitor and
@@ -91,13 +63,7 @@ echo '#define APPHASH "%{snap}"' >> appversion.h
 APPDATE=$(date --date="%{date}" "+%s")
 echo "#define APPDATE ${APPDATE}" >> appversion.h
 
-rm -f hardware/openzwave/*.h
-rm -rf hardware/openzwave/aes
-rm -rf hardware/openzwave/command_classes
-rm -rf hardware/openzwave/platform
-rm -rf hardware/openzwave/value_classes
-rm -rf sqlite/
-rm -rf tinyxpath/
+%{__rm} -r extern tinyxpath
 
 %build
 install -d build && cd build
@@ -119,41 +85,33 @@ install -d build && cd build
 
 %install
 rm -rf $RPM_BUILD_ROOT
+
 %{__make} -C build install \
-      DESTDIR=$RPM_BUILD_ROOT
+	DESTDIR=$RPM_BUILD_ROOT
+
+install -d $RPM_BUILD_ROOT{%{_bindir},%{_sysconfdir}/sysconfig,%{systemdunitdir},%{_sharedstatedir}/%{name}}
 
 # remove docs, we grab them in files below
-rm -f $RPM_BUILD_ROOT%{_datadir}/%{name}/*.txt
+%{__rm} $RPM_BUILD_ROOT%{_datadir}/%{name}/*.txt
 
 # move binary to standard directory
-install -d $RPM_BUILD_ROOT%{_bindir}/
-mv $RPM_BUILD_ROOT%{_datadir}/%{name}/%{name} $RPM_BUILD_ROOT%{_bindir}/
+mv $RPM_BUILD_ROOT%{_datadir}/%{name}/%{name} $RPM_BUILD_ROOT%{_bindir}
 
-# install systemd service and config
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/
-install -d $RPM_BUILD_ROOT%{systemdunitdir}/
-cp -p %{SOURCE1} $RPM_BUILD_ROOT%{systemdunitdir}/
+cp -p %{SOURCE1} $RPM_BUILD_ROOT%{systemdunitdir}
 cp -p %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
 
-# create database/ssl cert directory
-install -d $RPM_BUILD_ROOT%{_sharedstatedir}/%{name}/
-
-# Disable the app's self-update script
-
 # Unbundle DroidSans.ttf
-rm -f $RPM_BUILD_ROOT%{_datadir}/%{name}/www/styles/elemental/fonts/DroidSans.ttf
-ln -s /usr/share/fonts/TTF/DroidSans.ttf \
-      $RPM_BUILD_ROOT%{_datadir}/%{name}/www/styles/elemental/fonts/
-rm -f $RPM_BUILD_ROOT%{_datadir}/%{name}/www/styles/element-light/fonts/DroidSans.ttf
-ln -s /usr/share/fonts/TTF/DroidSans.ttf \
-      $RPM_BUILD_ROOT%{_datadir}/%{name}/www/styles/element-light/fonts/
-rm -f $RPM_BUILD_ROOT%{_datadir}/%{name}/www/styles/element-dark/fonts/DroidSans.ttf
-ln -s /usr/share/fonts/TTF/DroidSans.ttf \
-      $RPM_BUILD_ROOT%{_datadir}/%{name}/www/styles/element-dark/fonts/
+%{__rm} $RPM_BUILD_ROOT%{_datadir}/%{name}/www/styles/element{al,-light,-dark}/fonts/DroidSans.ttf
+ln -s %{_fontsdir}/TTF/DroidSans.ttf \
+	$RPM_BUILD_ROOT%{_datadir}/%{name}/www/styles/elemental/fonts
+ln -s %{_fontsdir}/TTF/DroidSans.ttf \
+	$RPM_BUILD_ROOT%{_datadir}/%{name}/www/styles/element-light/fonts
+ln -s %{_fontsdir}/TTF/DroidSans.ttf \
+	$RPM_BUILD_ROOT%{_datadir}/%{name}/www/styles/element-dark/fonts
 
 # OpenZWave Control Panel temp file
 ln -s %{_sharedstatedir}/%{name}/ozwcp.poll.XXXXXX.xml \
-      $RPM_BUILD_ROOT%{_datadir}/%{name}/ozwcp.poll.XXXXXX.xml
+	$RPM_BUILD_ROOT%{_datadir}/%{name}/ozwcp.poll.XXXXXX.xml
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -177,10 +135,9 @@ usermod -G domoticz,dialout domoticz
 
 %files
 %defattr(644,root,root,755)
-%doc License.txt
-%doc README.md History.txt
+%doc License.txt README.md History.txt
 %attr(755,root,root) %{_bindir}/%{name}
 %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/%{name}
-%{_datadir}/%{name}/
-%attr(755,domoticz,domoticz) %{_sharedstatedir}/%{name}/
+%{_datadir}/%{name}
+%dir %attr(750,domoticz,domoticz) %{_sharedstatedir}/%{name}
 %{systemdunitdir}/%{name}.service
