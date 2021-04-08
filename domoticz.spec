@@ -42,6 +42,8 @@ Requires(pre):	/usr/sbin/useradd
 Requires(post,preun,postun):	systemd-units >= 38
 Requires:	fonts-TTF-Google-Droid
 Requires:	libopenzwave >= 1.5.0
+Provides:	group(domoticz)
+Provides:	user(domoticz)
 
 %description
 Domoticz is a Home Automation System that lets you monitor and
@@ -117,12 +119,8 @@ ln -s %{_sharedstatedir}/%{name}/ozwcp.poll.XXXXXX.xml \
 rm -rf $RPM_BUILD_ROOT
 
 %pre
-getent group domoticz >/dev/null || groupadd -r domoticz
-getent passwd domoticz >/dev/null || \
-useradd -r -g domoticz -d %{_datadir}/%{name} -s /sbin/nologin \
--c "Domoticz Home Automation Server" domoticz
-# For OpenZWave USB access (/dev/ttyACM#)
-usermod -G domoticz,dialout domoticz
+%groupadd -g 342 domoticz
+%useradd -u 342 -r -d %{_datadir} -s /bin/false -c "Domoticz Home Automation Server" -G dialout -g domoticz domoticz
 
 %post
 %systemd_post %{name}.service
@@ -131,6 +129,10 @@ usermod -G domoticz,dialout domoticz
 %systemd_preun %{name}.service
 
 %postun
+if [ "$1" = "0" ]; then
+	%userremove mpd
+	%groupremove mpd
+fi
 %systemd_reload
 
 %files
