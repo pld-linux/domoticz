@@ -46,6 +46,7 @@ Requires(post,preun,postun):	systemd-units >= 38
 Requires:	fonts-TTF-Google-Droid
 Requires:	fonts-TTF-OpenSans
 Requires:	libopenzwave >= 1.5.0
+Requires:	setup >= 2.10.1
 Provides:	group(domoticz)
 Provides:	user(domoticz)
 
@@ -132,7 +133,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %pre
 %groupadd -g 342 domoticz
-%useradd -u 342 -r -d %{_datadir} -s /bin/false -c "Domoticz Home Automation Server" -G dialout -g domoticz domoticz
+%useradd -u 342 -r -d %{_datadir} -s /bin/false -c "Domoticz Home Automation Server" -G dialout,i2c -g domoticz domoticz
 
 %post
 %systemd_post %{name}.service
