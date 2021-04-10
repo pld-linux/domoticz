@@ -19,6 +19,7 @@ Patch3:		no-git.patch
 Patch4:		boost-1.73.patch
 Patch5:		%{name}-gpio.patch
 Patch6:		python3.9.patch
+Patch7:		%{name}-no_updates.patch
 BuildRequires:	boost-devel >= 1.66.0
 BuildRequires:	cereal-devel
 BuildRequires:	cmake >= 3.16.0
@@ -65,6 +66,7 @@ and much more. Notifications/Alerts can be sent to any mobile device
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
 
 APPVERSION="%{version}"
 echo "#define APPVERSION ${APPVERSION##*.}" > appversion.h
