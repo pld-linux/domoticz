@@ -45,7 +45,7 @@ index bc231d8f6..334f203a6 100644
  add_executable(domoticz ${domoticz_SRCS})
 @@ -682,6 +666,47 @@
    ENDIF(LIBUSB_FOUND)
- endif(WITH_LIBUSB)
+ ENDIF(WITH_LIBUSB)
  
 +option(USE_BUILTIN_TINYXPATH "Use builtin tinyxpath library" YES)
 +IF(USE_BUILTIN_TINYXPATH)
@@ -88,9 +88,9 @@ index bc231d8f6..334f203a6 100644
 +  ENDIF(TinyXML_FOUND)
 +ENDIF(USE_BUILTIN_TINYXPATH)
 +
- ## support lua popen on Linux platforms
- #IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
- # SET(OperatingSystem "Linux")
+ #
+ # OpenZWave
+ # try to find open-zwave, if found, include support
 --- a/hardware/openzwave/control_panel/ozwcp.cpp	2020-03-22 09:16:16.000000000 -0500
 +++ b/hardware/openzwave/control_panel/ozwcp.cpp	2020-03-24 10:53:04.968630391 -0500
 @@ -49,7 +49,7 @@
@@ -130,9 +130,9 @@ index bc231d8f6..334f203a6 100644
  
 +#include <tinyxml.h>
 +
- #define ADD_STRING_TO_DICT(pDict, key, value) \
- 		{	\
- 			PyObject*	pObj = Py_BuildValue("s", value.c_str());	\
+ #define ADD_STRING_TO_DICT(pPlugin, pDict, key, value)                                                                                                                                                          \
+ 	{                                                                                                                                                                                              \
+ 		PyNewRef	pObj = Py_BuildValue("s", value.c_str());                                                                                                                                    \
 --- a/hardware/AnnaThermostat.cpp	2020-03-22 09:16:16.000000000 -0500
 +++ b/hardware/AnnaThermostat.cpp	2020-03-24 10:41:00.530030798 -0500
 @@ -9,7 +9,7 @@

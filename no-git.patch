@@ -1,6 +1,6 @@
 --- domoticz-2020.2/CMakeLists.txt.orig	2020-06-06 12:02:05.000000000 +0200
 +++ domoticz-2020.2/CMakeLists.txt	2020-06-06 12:19:29.867654435 +0200
-@@ -88,40 +88,13 @@
+@@ -88,39 +88,13 @@
    ENDIF(EXISTS ${CMAKE_SOURCE_DIR}/History.txt)
  ENDMACRO(History_GET_REVISION)
  
@@ -20,28 +20,27 @@
 -ELSE(NOT ProjectRevision)
 -  MATH(EXPR ProjectRevision "${ProjectRevision}+2107")
 -ENDIF(NOT ProjectRevision)
--
 +History_GET_REVISION(ProjectRevision)
  
  ### SUBMODULE / BUNDLED SOFTWARE
  #
  #
--if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
+-IF(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
 -# Update submodules as needed
--    if(GIT_SUBMODULE)
+-    IF(GIT_SUBMODULE)
 -        message(STATUS "Submodule update")
--    execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
+-    execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --remote --recursive
 -                        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 -                        RESULT_VARIABLE GIT_SUBMOD_RESULT)
--        if(NOT GIT_SUBMOD_RESULT EQUAL "0")
+-        IF(NOT GIT_SUBMOD_RESULT EQUAL "0")
 -            message(FATAL_ERROR "git submodule update --init failed with ${GIT_SUBMOD_RESULT}, please checkout submodules")
--        endif()
--    endif()
--endif()
+-        ENDIF()
+-    ENDIF()
+-ENDIF()
 -
- if(USE_BUILTIN_JSONCPP AND NOT EXISTS "${PROJECT_SOURCE_DIR}/extern/jsoncpp/CMakeLists.txt")
+ IF(USE_BUILTIN_JSONCPP AND NOT EXISTS "${PROJECT_SOURCE_DIR}/extern/jsoncpp/CMakeLists.txt")
    message(FATAL_ERROR "The submodules were not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
- endif()
+ ENDIF()
 --- domoticz-2020.2/getgit.cmake.orig	2020-04-26 15:49:25.000000000 +0200
 +++ domoticz-2020.2/getgit.cmake	2020-06-06 12:19:42.567678153 +0200
 @@ -2,11 +2,6 @@
@@ -82,7 +81,7 @@
 -ENDMACRO(Gitversion_GET_DATE)
 -
 -MACRO(Gitversion_CHECK_DIRTY dir variable)
--  EXECUTE_PROCESS(COMMAND ${GIT_EXECUTABLE} --git-dir ./.git diff-index -m --name-only HEAD
+-  EXECUTE_PROCESS(COMMAND ${GIT_EXECUTABLE} --git-dir ./.git diff-index -m --ignore-submodules --name-only HEAD
 -    WORKING_DIRECTORY ${dir}
 -    OUTPUT_VARIABLE ${variable}
 -    OUTPUT_STRIP_TRAILING_WHITESPACE)

@@ -1,8 +1,8 @@
 --- domoticz-2020.2/CMakeLists.txt.orig	2021-04-08 21:42:12.847131340 +0200
 +++ domoticz-2020.2/CMakeLists.txt	2021-04-08 21:52:40.727278201 +0200
 @@ -718,12 +718,7 @@
+   MESSAGE(STATUS "==== OpenZWave not found, support disabled!")
  ENDIF(OpenZWave)
- 
  
 -IF(EXISTS /sys/class/gpio)
 -  message(STATUS "GPIO is available")
@@ -12,5 +12,5 @@
 -ENDIF()
 +add_definitions(-DWITH_GPIO)
  
- 
  find_path(TELLDUSCORE_INCLUDE NAMES telldus-core.h)
+ IF(TELLDUSCORE_INCLUDE)

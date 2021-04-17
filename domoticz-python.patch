@@ -17,10 +17,11 @@ diff --git a/hardware/plugins/DelayedLink.h b/hardware/plugins/DelayedLink.h
 index 25c83f034..ecf19da09 100644
 --- a/hardware/plugins/DelayedLink.h
 +++ b/hardware/plugins/DelayedLink.h
-@@ -150,18 +150,10 @@
+@@ -150,20 +150,10 @@
  				if (!shared_lib_) shared_lib_ = LoadLibrary("python35_d.dll");
  				if (!shared_lib_) shared_lib_ = LoadLibrary("python34_d.dll");
  #	else
+-				if (!shared_lib_) shared_lib_ = LoadLibrary("python39.dll");
 -				if (!shared_lib_) shared_lib_ = LoadLibrary("python38.dll");
 -				if (!shared_lib_) shared_lib_ = LoadLibrary("python37.dll");
 -				if (!shared_lib_) shared_lib_ = LoadLibrary("python36.dll");
@@ -29,6 +30,7 @@ index 25c83f034..ecf19da09 100644
 +				if (!shared_lib_) shared_lib_ = LoadLibrary("python.dll");
  #	endif
  #else
+-				if (!shared_lib_) FindLibrary("python3.9", true);
 -				if (!shared_lib_) FindLibrary("python3.8", true);
 -				if (!shared_lib_) FindLibrary("python3.7", true);
 -				if (!shared_lib_) FindLibrary("python3.6", true);

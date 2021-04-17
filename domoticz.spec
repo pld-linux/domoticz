@@ -1,33 +1,30 @@
 Summary:	Open source Home Automation System
 Name:		domoticz
-Version:	2020.2
-Release:	3
+Version:	2021.1
+Release:	1
 License:	GPLv3+ and ASL 2.0 and Boost and BSD and MIT
 Group:		Base
 URL:		http://www.domoticz.com
 Source0:	https://github.com/domoticz/domoticz/archive/%{version}.tar.gz
-# Source0-md5:	fd383a13d13d0976c72f332d6db1d24e
+# Source0-md5:	28349806fc3ddb0514ea7d9255ceecd0
 Source1:	%{name}.service
 Source2:	%{name}.conf
 # Use system tinyxpath (https://github.com/domoticz/domoticz/pull/1759)
 Patch0:		%{name}-tinyxpath.patch
-# Use system openzwave includes
-Patch1:		%{name}-openzwave.patch
 # Fix python detection (https://github.com/domoticz/domoticz/pull/1749)
-Patch2:		%{name}-python.patch
-Patch3:		no-git.patch
-Patch4:		boost-1.73.patch
-Patch5:		%{name}-gpio.patch
-Patch6:		python3.9.patch
-Patch7:		%{name}-no_updates.patch
+Patch1:		%{name}-python.patch
+Patch2:		no-git.patch
+Patch3:		%{name}-gpio.patch
+Patch4:		%{name}-no_updates.patch
 BuildRequires:	boost-devel >= 1.66.0
 BuildRequires:	cereal-devel
 BuildRequires:	cmake >= 3.16.0
 BuildRequires:	curl-devel
 BuildRequires:	jsoncpp-devel
+BuildRequires:	libfmt-devel
 BuildRequires:	libmosquitto-devel
 BuildRequires:	libopenzwave-devel >= 1.5.0
-BuildRequires:	libstdc++-devel >= 6:4.8.1
+BuildRequires:	libstdc++-devel >= 6:4.9
 BuildRequires:	libusb-compat-devel
 BuildRequires:	linux-libc-headers
 BuildRequires:	lua53-devel
@@ -64,9 +61,6 @@ and much more. Notifications/Alerts can be sent to any mobile device
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%patch7 -p1
 
 APPVERSION="%{version}"
 echo "#define APPVERSION ${APPVERSION##*.}" > appversion.h
@@ -80,6 +74,7 @@ echo "#define APPDATE ${APPDATE}" >> appversion.h
 install -d build && cd build
 %cmake \
 	-DUSE_BUILTIN_JSONCPP=NO \
+	-DUSE_BUILTIN_LIBFMT=NO \
 	-DUSE_BUILTIN_MINIZIP=NO \
 	-DUSE_BUILTIN_MQTT=NO \
 	-DUSE_BUILTIN_SQLITE=NO \
