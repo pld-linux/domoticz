@@ -5,7 +5,7 @@ Release:	1
 License:	GPLv3+ and ASL 2.0 and Boost and BSD and MIT
 Group:		Base
 URL:		http://www.domoticz.com
-Source0:	https://github.com/domoticz/domoticz/archive/%{version}.tar.gz
+Source0:	https://github.com/domoticz/domoticz/archive/%{version}/%{name}-%{version}.tar.gz
 # Source0-md5:	28349806fc3ddb0514ea7d9255ceecd0
 Source1:	%{name}.service
 Source2:	%{name}.conf
