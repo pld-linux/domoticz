@@ -45,6 +45,7 @@ Requires:	fonts-TTF-Google-Droid
 Requires:	fonts-TTF-OpenSans
 Requires:	libopenzwave >= 1.5.0
 Requires:	setup >= 2.10.1
+Suggests:	python3-libs
 Provides:	group(domoticz)
 Provides:	user(domoticz)
 
