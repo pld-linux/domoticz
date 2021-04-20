@@ -1,5 +1,6 @@
 [Unit]
 Description=Domoticz Home Automation Server
+After=syslog.target network.target
 
 [Service]
 User=domoticz
