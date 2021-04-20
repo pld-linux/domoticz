@@ -48,6 +48,7 @@ Requires:	setup >= 2.10.1
 Suggests:	python3-libs
 Provides:	group(domoticz)
 Provides:	user(domoticz)
+BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
 Domoticz is a Home Automation System that lets you monitor and
