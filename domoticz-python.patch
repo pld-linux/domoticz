@@ -1,23 +1,6 @@
-From f7b229ce873ff71e2b48e855075153dc1026750d Mon Sep 17 00:00:00 2001
-From: Michael Cronenworth <mike@cchtml.com>
-Date: Mon, 7 Aug 2017 14:37:28 -0500
-Subject: [PATCH] Follow PEP-384 when finding and opening python3 library
-
-Instead of maintaining a list of all Python versions the Python 3
-standard defines that there MUST be a stable ABI and we can always
-rely on a "python3.dll" or a "libpython3.so" existing.
-
-This also fixes library loading on Linux distributions that use
-SO versioned libraries.
----
- hardware/plugins/DelayedLink.h | 28 ++--------------------------
- 1 file changed, 2 insertions(+), 26 deletions(-)
-
-diff --git a/hardware/plugins/DelayedLink.h b/hardware/plugins/DelayedLink.h
-index 25c83f034..ecf19da09 100644
---- a/hardware/plugins/DelayedLink.h
-+++ b/hardware/plugins/DelayedLink.h
-@@ -150,20 +150,10 @@
+--- domoticz-2021.1/hardware/plugins/DelayedLink.h.orig	2021-04-17 17:50:55.000000000 +0200
++++ domoticz-2021.1/hardware/plugins/DelayedLink.h	2021-04-20 12:36:46.238826640 +0200
+@@ -155,20 +155,10 @@
  				if (!shared_lib_) shared_lib_ = LoadLibrary("python35_d.dll");
  				if (!shared_lib_) shared_lib_ = LoadLibrary("python34_d.dll");
  #	else
@@ -36,45 +19,48 @@ index 25c83f034..ecf19da09 100644
 -				if (!shared_lib_) FindLibrary("python3.6", true);
 -				if (!shared_lib_) FindLibrary("python3.5", true);
 -				if (!shared_lib_) FindLibrary("python3.4", true);
-+				if (!shared_lib_) FindLibrary("python3", true);
++				if (!shared_lib_) FindLibrary(PYTHON_LIBDIR, false);
  #ifdef __FreeBSD__
  				if (!shared_lib_) FindLibrary("python3.7m", true);
  				if (!shared_lib_) FindLibrary("python3.6m", true);
-@@ -271,24 +263,12 @@
- 						library = "lib" + sLibrary + ".so";
- 						shared_lib_ = dlopen(library.c_str(), RTLD_LAZY | RTLD_GLOBAL);
- 					}
--					// look in directories covered by ldconfig but 'm' variant
--					if (!shared_lib_)
+@@ -355,34 +327,20 @@
+ 				else
+ 				{
+ 					std::vector<std::string> entries;
+-					DirectoryListing(entries, sLibrary, true, false);
+-					for (const auto &entry : entries)
 -					{
--						library = "lib" + sLibrary + "m.so";
--						shared_lib_ = dlopen(library.c_str(), RTLD_LAZY | RTLD_GLOBAL);
--					}
- 					// look in /usr/lib directories
- 					if (!shared_lib_)
- 					{
- 						library = "/usr/lib/" + sLibrary + "/";
- 						FindLibrary(library, false);
- 					}
--					// look in /usr/lib directories but 'm' variant
--					if (!shared_lib_)
--					{
--						library = "/usr/lib/" + sLibrary + "m/";
+-						if (shared_lib_)
+-						{
+-							break;
+-						}
+-
+-						library = sLibrary + entry + "/";
 -						FindLibrary(library, false);
 -					}
- 					// look in /usr/local/lib directory (handles build from source)
- 					if (!shared_lib_)
+-
+-					entries.clear();
+ 					DirectoryListing(entries, sLibrary, false, true);
+ 					for (const auto &filename : entries)
  					{
-@@ -296,12 +276,6 @@
- 						shared_lib_ = dlopen(library.c_str(), RTLD_LAZY | RTLD_GLOBAL);
+-						if (shared_lib_)
+-						{
+-							break;
+-						}
  
+ 						if (filename.length() > 12 &&
+ 							filename.compare(0, 11, "libpython3.") == 0 &&
+-							filename.compare(filename.length() - 3, 3, ".so") == 0 &&
+-							filename.compare(filename.length() - 6, 6, ".dylib") == 0)
++							filename.find(".so", 10) != std::string::npos)
+ 						{
+-							library = sLibrary + filename;
++							library = sLibrary + "/" + filename;
+ 							shared_lib_ = dlopen(library.c_str(), RTLD_LAZY | RTLD_GLOBAL);
++							if (shared_lib_)
++							{
++								break;
++							}
+ 						}
  					}
--					// look in /usr/local/lib directory (handles build from source) but 'm' variant
--					if (!shared_lib_)
--					{
--						library = "/usr/local/lib/lib" + sLibrary + "m.so";
--						shared_lib_ = dlopen(library.c_str(), RTLD_LAZY | RTLD_GLOBAL);
--					}
- 					// MacOS
- 					// look for .dylib in /usr/local/lib
- 					if (!shared_lib_)
+ 				}

@@ -72,6 +72,7 @@ echo "#define APPDATE ${APPDATE}" >> appversion.h
 
 %build
 install -d build && cd build
+export CXXFLAGS="%{rpmcxxflags} -DPYTHON_LIBDIR=\\\"%{_libdir}\\\""
 %cmake \
 	-DUSE_BUILTIN_JSONCPP=NO \
 	-DUSE_BUILTIN_LIBFMT=NO \
