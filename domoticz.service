@@ -1,6 +1,6 @@
 [Unit]
 Description=Domoticz Home Automation Server
-After=syslog.target network.target
+After=syslog.target network.target time-sync.target
 
 [Service]
 User=domoticz
