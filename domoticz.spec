@@ -1,7 +1,7 @@
 Summary:	Open source Home Automation System
 Name:		domoticz
 Version:	2021.1
-Release:	5
+Release:	6
 License:	GPLv3+ and ASL 2.0 and Boost and BSD and MIT
 Group:		Base
 URL:		http://www.domoticz.com
@@ -143,8 +143,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %postun
 if [ "$1" = "0" ]; then
-	%userremove mpd
-	%groupremove mpd
+	%userremove domoticz
+	%groupremove domoticz
 fi
 %systemd_reload
 
