@@ -1,0 +1,42 @@
+--- domoticz-2022.1/scripts/domoticz.conf.orig	2022-01-31 09:34:32.000000000 +0100
++++ domoticz-2022.1/scripts/domoticz.conf	2022-01-31 22:04:48.248783086 +0100
+@@ -42,7 +42,7 @@
+ # reset_password=yes
+ 
+ # SSL certificate file
+-# ssl_cert=/opt/domoticz/server_cert.pem
++ssl_cert=/var/lib/domoticz/domoticz.pem
+ 
+ # SSL certificate key file (could also point to SSL certificate file if it contains the key)
+ # ssl_key=/opt/domoticz/server_cert.key
+@@ -60,7 +60,7 @@
+ # ssl_options=default_workarounds,no_sslv2,no_sslv3,no_tlsv1,no_tlsv1_1,single_dh_use'
+ 
+ # Log file (for example /var/log/domoticz.log)
+-# log_file=/var/log/domoticz.log
++log_file=/var/log/domoticz.log
+ 
+ # Log level (combination of: normal,status,error,debug)
+ # loglevel=normal,status,error
+@@ -75,7 +75,7 @@
+ # syslog=user
+ 
+ # Database
+-# dbase_file=/opt/domoticz/domoticz.db
++dbase_file=/var/lib/domoticz.db
+ 
+ # Startup delay, time the daemon will pause before launching
+ # startup_delay=0
+@@ -87,10 +87,10 @@
+ # php_cgi_path=/usr/bin/php-cgi
+ 
+ # Application path (folder where domoticz is installed in)
+-# app_path=/opt/domoticz
++app_path=@DOMOTICZ_DIR@
+ 
+ # User data path (where backups and scripts are installed)
+-# userdata_path=/opt/domoticz
++userdata_path=@DOMOTICZ_DIR@
+ 
+ # Run as daemon (default when launched as service)
+ # daemon=yes

@@ -16,6 +16,7 @@ Patch1:		%{name}-python.patch
 Patch2:		no-git.patch
 Patch3:		%{name}-no_updates.patch
 Patch4:		strstr.patch
+Patch5:		config.patch
 BuildRequires:	boost-devel >= 1.66.0
 BuildRequires:	cereal-devel
 BuildRequires:	cmake >= 3.16.0
@@ -62,6 +63,7 @@ and much more. Notifications/Alerts can be sent to any mobile device
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
 APPVERSION="%{version}"
 echo "#define APPVERSION ${APPVERSION##*.}" > appversion.h
@@ -97,7 +99,7 @@ rm -rf $RPM_BUILD_ROOT
 %{__make} -C build install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-install -d $RPM_BUILD_ROOT{%{_bindir},%{_sysconfdir}/sysconfig,%{systemdunitdir},%{_sharedstatedir}/%{name}}
+install -d $RPM_BUILD_ROOT{%{_bindir},%{_sysconfdir}/{domoticz,sysconfig},%{systemdunitdir},%{_sharedstatedir}/%{name}}
 
 # remove docs, we grab them in files below
 %{__rm} $RPM_BUILD_ROOT%{_datadir}/%{name}/*.txt
@@ -105,8 +107,9 @@ install -d $RPM_BUILD_ROOT{%{_bindir},%{_sysconfdir}/sysconfig,%{systemdunitdir}
 # move binary to standard directory
 mv $RPM_BUILD_ROOT%{_datadir}/%{name}/%{name} $RPM_BUILD_ROOT%{_bindir}
 
-cp -p %{SOURCE1} $RPM_BUILD_ROOT%{systemdunitdir}
-cp -p %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
+sed -e 's#@DOMOTICZ_DIR@#%{_datadir}/%{name}#g' %{SOURCE1} > $RPM_BUILD_ROOT%{systemdunitdir}/%{name}.service
+sed -e 's#@DOMOTICZ_DIR@#%{_datadir}/%{name}#g' scripts/domoticz.conf > $RPM_BUILD_ROOT%{_sysconfdir}/domoticz/domoticz.conf
+sed -e 's#@DOMOTICZ_CONF_DIR@#%{_sysconfdir}/%{name}#' %{SOURCE2} > $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
 
 # Unbundle DroidSans.ttf
 %{__rm} $RPM_BUILD_ROOT%{_datadir}/%{name}/www/styles/element{al,-light,-dark}/fonts/{Droid,Open}Sans.ttf
@@ -147,10 +150,27 @@ if [ "$1" = "0" ]; then
 fi
 %systemd_reload
 
+%triggerpostun -- domoticz < 2022.1
+if [ -f /etc/sysconfig/domoticz.rpmnew ] && [ -f /etc/sysconfig/domoticz ] && ! grep -q '^DOMOTICZ_CONF=' /etc/sysconfig/domoticz; then
+	(
+	. /etc/sysconfig/domoticz
+	for c in WWW_PORT:http_port SSL_PORT:ssl_port SSLCERT:ssl_cert SSLPASS:ssl_pass SSLMETHOD:ssl_method SSLOPTIONS:ssl_options SSLDHPARAM:ssl_dhparam WWW_ROOT:http_root DBASE:dbase_file USERDATA:userdata_path LOG:log_file; do
+		cn_before=${c%:*}
+		cn_after=${c#*:}
+		eval cn_value=\"\$$cn_before\"
+		test -n "$cn_value" && sed -i -e "s|^[[:space:]#]*$cn_after=.*|$cn_after=$cn_value|" %{_sysconfdir}/%{name}/%{name}.conf
+	done
+	)
+	mv -f /etc/sysconfig/domoticz{,.rpmsave}
+	mv /etc/sysconfig/domoticz{.rpmnew,}
+fi
+
 %files
 %defattr(644,root,root,755)
 %doc License.txt README.md History.txt
 %attr(755,root,root) %{_bindir}/%{name}
+%dir %attr(750,domoticz,domoticz) %{_sysconfdir}/%{name}
+%attr(640,domoticz,domoticz) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/%{name}.conf
 %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/%{name}
 %{_datadir}/%{name}
 %dir %attr(750,domoticz,domoticz) %{_sharedstatedir}/%{name}
