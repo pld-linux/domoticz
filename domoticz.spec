@@ -1,12 +1,12 @@
 Summary:	Open source Home Automation System
 Name:		domoticz
-Version:	2021.1
-Release:	7
+Version:	2022.1
+Release:	1
 License:	GPLv3+ and ASL 2.0 and Boost and BSD and MIT
 Group:		Base
 URL:		http://www.domoticz.com
 Source0:	https://github.com/domoticz/domoticz/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	28349806fc3ddb0514ea7d9255ceecd0
+# Source0-md5:	03ebcd9af34fbd2737725303a50ad9fd
 Source1:	%{name}.service
 Source2:	%{name}.conf
 # Use system tinyxpath (https://github.com/domoticz/domoticz/pull/1759)
@@ -14,14 +14,13 @@ Patch0:		%{name}-tinyxpath.patch
 # Fix python detection (https://github.com/domoticz/domoticz/pull/1749)
 Patch1:		%{name}-python.patch
 Patch2:		no-git.patch
-Patch3:		%{name}-gpio.patch
-Patch4:		%{name}-no_updates.patch
+Patch3:		%{name}-no_updates.patch
+Patch4:		strstr.patch
 BuildRequires:	boost-devel >= 1.66.0
 BuildRequires:	cereal-devel
 BuildRequires:	cmake >= 3.16.0
 BuildRequires:	curl-devel
 BuildRequires:	jsoncpp-devel
-BuildRequires:	libfmt-devel
 BuildRequires:	libmosquitto-devel
 BuildRequires:	libopenzwave-devel >= 1.5.0
 BuildRequires:	libstdc++-devel >= 6:4.9
@@ -77,7 +76,6 @@ install -d build && cd build
 export CXXFLAGS="%{rpmcxxflags} -DPYTHON_LIBDIR=\\\"%{_libdir}\\\""
 %cmake \
 	-DUSE_BUILTIN_JSONCPP=NO \
-	-DUSE_BUILTIN_LIBFMT=NO \
 	-DUSE_BUILTIN_MINIZIP=NO \
 	-DUSE_BUILTIN_MQTT=NO \
 	-DUSE_BUILTIN_SQLITE=NO \
@@ -87,6 +85,7 @@ export CXXFLAGS="%{rpmcxxflags} -DPYTHON_LIBDIR=\\\"%{_libdir}\\\""
 	-DUSE_STATIC_BOOST=NO \
 	-DUSE_STATIC_LIBSTDCXX=NO \
 	-DUSE_STATIC_OPENZWAVE=NO \
+	-DFORCE_WITH_GPIO:BOOL=TRUE \
 	-DCMAKE_INSTALL_PREFIX=%{_datadir}/%{name} \
 	..
 
