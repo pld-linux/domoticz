@@ -17,6 +17,7 @@ Patch2:		no-git.patch
 Patch3:		%{name}-no_updates.patch
 Patch4:		strstr.patch
 Patch5:		config.patch
+Patch6:		gcc12.patch
 BuildRequires:	boost-devel >= 1.66.0
 BuildRequires:	cereal-devel
 BuildRequires:	cmake >= 3.16.0
@@ -64,6 +65,7 @@ and much more. Notifications/Alerts can be sent to any mobile device
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
 
 APPVERSION="%{version}"
 echo "#define APPVERSION ${APPVERSION##*.}" > appversion.h
