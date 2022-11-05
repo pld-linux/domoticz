@@ -1,9 +1,10 @@
 --- domoticz-2021.1/hardware/plugins/DelayedLink.h.orig	2021-04-17 17:50:55.000000000 +0200
 +++ domoticz-2021.1/hardware/plugins/DelayedLink.h	2021-04-20 12:36:46.238826640 +0200
-@@ -155,20 +155,10 @@
- 				if (!shared_lib_) shared_lib_ = LoadLibrary("python35_d.dll");
- 				if (!shared_lib_) shared_lib_ = LoadLibrary("python34_d.dll");
- #	else
+@@ -155,21 +155,9 @@
+ 			shared_lib_ = nullptr;
+ 			if (!shared_lib_) {
+ #ifdef WIN32
+-				if (!shared_lib_) shared_lib_ = LoadLibrary("python310.dll");
 -				if (!shared_lib_) shared_lib_ = LoadLibrary("python39.dll");
 -				if (!shared_lib_) shared_lib_ = LoadLibrary("python38.dll");
 -				if (!shared_lib_) shared_lib_ = LoadLibrary("python37.dll");
@@ -11,8 +12,8 @@
 -				if (!shared_lib_) shared_lib_ = LoadLibrary("python35.dll");
 -				if (!shared_lib_) shared_lib_ = LoadLibrary("python34.dll");
 +				if (!shared_lib_) shared_lib_ = LoadLibrary("python.dll");
- #	endif
  #else
+-				if (!shared_lib_) FindLibrary("python3.10", true);
 -				if (!shared_lib_) FindLibrary("python3.9", true);
 -				if (!shared_lib_) FindLibrary("python3.8", true);
 -				if (!shared_lib_) FindLibrary("python3.7", true);

@@ -132,7 +132,7 @@ index bc231d8f6..334f203a6 100644
 +
  #define ADD_STRING_TO_DICT(pPlugin, pDict, key, value)                                                                                      \
  	{                                                                                                                                       \
- 		PyNewRef	pObj = Py_BuildValue("s", value.c_str());                                                                               \
+ 		PyNewRef	pStr(value);                                                                               \
 --- a/hardware/AnnaThermostat.cpp	2020-03-22 09:16:16.000000000 -0500
 +++ b/hardware/AnnaThermostat.cpp	2020-03-24 10:41:00.530030798 -0500
 @@ -9,7 +9,7 @@
@@ -158,8 +158,8 @@ index bc231d8f6..334f203a6 100644
 +#include <tinyxml.h>
 +#include <xpath_static.h>
  
- #ifdef _DEBUG
- #define DEBUG_EcoDevices
+ // Minimum EcoDevises firmware required
+ #define MAJOR 1
 --- a/hardware/OnkyoAVTCP.cpp	2018-06-23 09:18:06.000000000 -0500
 +++ b/hardware/OnkyoAVTCP.cpp	2018-07-08 14:21:06.884163094 -0500
 @@ -3,15 +3,15 @@

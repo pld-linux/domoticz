@@ -1,8 +1,8 @@
 --- domoticz-2020.2/main/domoticz.cpp.orig	2020-04-26 15:49:25.000000000 +0200
 +++ domoticz-2020.2/main/domoticz.cpp	2021-04-10 16:50:37.189198278 +0200
 @@ -152,7 +152,7 @@
+ bool g_bUseSyslog = false;
  bool g_bRunAsDaemon = false;
- bool g_bDontCacheWWW = false;
  http::server::_eWebCompressionMode g_wwwCompressMode = http::server::WWW_USE_GZIP;
 -bool g_bUseUpdater = true;
 +bool g_bUseUpdater = false;

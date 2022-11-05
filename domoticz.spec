@@ -1,12 +1,12 @@
 Summary:	Open source Home Automation System
 Name:		domoticz
-Version:	2022.1
-Release:	3
+Version:	2022.2
+Release:	1
 License:	GPLv3+ and ASL 2.0 and Boost and BSD and MIT
 Group:		Base
 URL:		http://www.domoticz.com
 Source0:	https://github.com/domoticz/domoticz/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	03ebcd9af34fbd2737725303a50ad9fd
+# Source0-md5:	f9ac0ba4828dc40a19c1f24f8b2d9614
 Source1:	%{name}.service
 Source2:	%{name}.conf
 # Use system tinyxpath (https://github.com/domoticz/domoticz/pull/1759)
@@ -15,9 +15,7 @@ Patch0:		%{name}-tinyxpath.patch
 Patch1:		%{name}-python.patch
 Patch2:		no-git.patch
 Patch3:		%{name}-no_updates.patch
-Patch4:		strstr.patch
-Patch5:		config.patch
-Patch6:		gcc12.patch
+Patch4:		config.patch
 BuildRequires:	boost-devel >= 1.66.0
 BuildRequires:	cereal-devel
 BuildRequires:	cmake >= 3.16.0
@@ -64,8 +62,6 @@ and much more. Notifications/Alerts can be sent to any mobile device
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
-%patch5 -p1
-%patch6 -p1
 
 APPVERSION="%{version}"
 echo "#define APPVERSION ${APPVERSION##*.}" > appversion.h
