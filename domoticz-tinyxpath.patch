@@ -193,3 +193,14 @@ index bc231d8f6..334f203a6 100644
  
  //Rainforest RAVEn USB ZigBee Smart Meter Adapter
  //https://rainforestautomation.com/rfa-z106-raven/
+--- domoticz-2023.1/hardware/EnphaseAPI.cpp.orig	2023-02-14 14:48:00.000000000 +0100
++++ domoticz-2023.1/hardware/EnphaseAPI.cpp	2023-02-15 19:45:27.206931016 +0100
+@@ -10,7 +10,7 @@
+ #include "../main/RFXtrx.h"
+ #include "../main/SQLHelper.h"
+ #include "../notifications/NotificationHelper.h"
+-#include "../tinyxpath/tinyxml.h"
++#include <tinyxml.h>
+ #include "hardwaretypes.h"
+ #include <iostream>
+ 
