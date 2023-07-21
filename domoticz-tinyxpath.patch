@@ -121,9 +121,9 @@ index bc231d8f6..334f203a6 100644
 --- a/hardware/plugins/Plugins.cpp	2020-03-22 09:16:16.000000000 -0500
 +++ b/hardware/plugins/Plugins.cpp	2020-03-24 13:45:46.056965796 -0500
 @@ -16,10 +16,11 @@
+ #include "../../main/Logger.h"
  #include "../../main/SQLHelper.h"
  #include "../../main/mainworker.h"
- #include "../../main/localtime_r.h"
 -#include "../../tinyxpath/tinyxml.h"
  
  #include "../../notifications/NotificationHelper.h"
@@ -147,8 +147,8 @@ index bc231d8f6..334f203a6 100644
 --- a/hardware/EcoDevices.cpp	2020-03-22 09:16:16.000000000 -0500
 +++ b/hardware/EcoDevices.cpp	2020-03-24 10:47:20.095926641 -0500
 @@ -33,11 +33,11 @@
+ #include "../main/Logger.h"
  #include "hardwaretypes.h"
- #include "../main/localtime_r.h"
  #include "../httpclient/HTTPClient.h"
 -#include "../tinyxpath/tinyxml.h"
 -#include "../tinyxpath/xpath_static.h"
@@ -162,12 +162,11 @@ index bc231d8f6..334f203a6 100644
  #define MAJOR 1
 --- a/hardware/OnkyoAVTCP.cpp	2018-06-23 09:18:06.000000000 -0500
 +++ b/hardware/OnkyoAVTCP.cpp	2018-07-08 14:21:06.884163094 -0500
-@@ -3,15 +3,15 @@
+@@ -3,14 +3,14 @@
  #include "../main/Logger.h"
  #include "../main/Helper.h"
  #include "../main/SQLHelper.h"
 -#include <iostream>
- #include "../main/localtime_r.h"
  #include "../main/mainworker.h"
  #include "../hardware/hardwaretypes.h"
 -#include <json/json.h>
@@ -201,6 +200,17 @@ index bc231d8f6..334f203a6 100644
  #include "../notifications/NotificationHelper.h"
 -#include "../tinyxpath/tinyxml.h"
 +#include <tinyxml.h>
+ #include "../webserver/Base64.h"
  #include "hardwaretypes.h"
  #include <iostream>
- 
+--- domoticz-2023.2/hardware/Enever.cpp.orig	2023-07-21 17:23:44.000000000 +0200
++++ domoticz-2023.2/hardware/Enever.cpp	2023-07-21 20:39:42.240298598 +0200
+@@ -9,7 +9,7 @@
+ #include "../main/RFXtrx.h"
+ #include "../main/SQLHelper.h"
+ #include "../notifications/NotificationHelper.h"
+-#include "../tinyxpath/tinyxml.h"
++#include <tinyxml.h>
+ #include "../webserver/Base64.h"
+ #include "hardwaretypes.h"
+ #include <iostream>
