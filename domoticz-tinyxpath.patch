@@ -88,36 +88,9 @@ index bc231d8f6..334f203a6 100644
 +  ENDIF(TinyXML_FOUND)
 +ENDIF(USE_BUILTIN_TINYXPATH)
 +
- #
- # OpenZWave
- # try to find open-zwave, if found, include support
---- a/hardware/openzwave/control_panel/ozwcp.cpp	2020-03-22 09:16:16.000000000 -0500
-+++ b/hardware/openzwave/control_panel/ozwcp.cpp	2020-03-24 10:53:04.968630391 -0500
-@@ -49,7 +49,7 @@
- #include <sys/stat.h>
- #include <fstream>
- #include <iostream>
--#include "../../../tinyxpath/tinyxml.h"
-+#include <tinyxml.h>
- 
- //#include "microhttpd.h"
- #include "ozwcp.h"
---- a/hardware/plugins/PluginManager.cpp	2020-03-22 09:16:16.000000000 -0500
-+++ b/hardware/plugins/PluginManager.cpp	2020-03-24 13:53:05.305852598 -0500
-@@ -21,11 +21,12 @@
- #include "../../main/Logger.h"
- #include "../../main/SQLHelper.h"
- #include "../../main/WebServer.h"
--#include "../../tinyxpath/tinyxml.h"
- #ifdef WIN32
-+#       include "../../tinyxpath/tinyxml.h"
- #	include <direct.h>
- #else
- #	include <sys/stat.h>
-+#       include <tinyxml.h>
- #endif
- 
- #include "DelayedLink.h"
+ IF(EXISTS /sys/class/gpio OR FORCE_WITH_GPIO)
+   message(STATUS "GPIO is available")
+   add_definitions(-DWITH_GPIO)
 --- a/hardware/plugins/Plugins.cpp	2020-03-22 09:16:16.000000000 -0500
 +++ b/hardware/plugins/Plugins.cpp	2020-03-24 13:45:46.056965796 -0500
 @@ -16,10 +16,11 @@
