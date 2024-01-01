@@ -187,3 +187,33 @@ index bc231d8f6..334f203a6 100644
  #include "../webserver/Base64.h"
  #include "hardwaretypes.h"
  #include <iostream>
+--- domoticz-2024.1/hardware/MitsubishiWF.cpp.orig	2024-01-01 12:59:22.000000000 +0100
++++ domoticz-2024.1/hardware/MitsubishiWF.cpp	2024-01-01 14:16:42.214198241 +0100
+@@ -9,10 +9,10 @@
+ #include "../main/RFXtrx.h"
+ #include "../main/SQLHelper.h"
+ #include "../notifications/NotificationHelper.h"
+-#include "../tinyxpath/tinyxml.h"
+ #include "../webserver/Base64.h"
+ #include "hardwaretypes.h"
+ #include <iostream>
++#include <tinyxml.h>
+ 
+ 
+ #ifdef _DEBUG
+--- domoticz-2024.1/hardware/plugins/PluginManager.cpp.orig	2024-01-01 12:59:22.000000000 +0100
++++ domoticz-2024.1/hardware/plugins/PluginManager.cpp	2024-01-01 15:17:05.057939388 +0100
+@@ -20,12 +20,12 @@
+ #include "../../main/Logger.h"
+ #include "../../main/SQLHelper.h"
+ #include "../../main/WebServer.h"
+-#include "../../tinyxpath/tinyxml.h"
+ #ifdef WIN32
+ #	include <direct.h>
+ #else
+ #	include <sys/stat.h>
+ #endif
++#include <tinyxml.h>
+ 
+ #include "DelayedLink.h"
+ #include "../../main/EventsPythonModule.h"
