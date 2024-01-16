@@ -1,12 +1,12 @@
 Summary:	Open source Home Automation System
 Name:		domoticz
-Version:	2024.1
-Release:	2
+Version:	2024.2
+Release:	1
 License:	GPLv3+ and ASL 2.0 and Boost and BSD and MIT
 Group:		Base
 URL:		http://www.domoticz.com
 Source0:	https://github.com/domoticz/domoticz/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	35b60b24ab2e1cf6d721d6720ae8a670
+# Source0-md5:	0b7e289370e31e1349deffada9c11462
 Source1:	%{name}.service
 Source2:	%{name}.conf
 # Use system tinyxpath (https://github.com/domoticz/domoticz/pull/1759)
@@ -22,6 +22,7 @@ BuildRequires:	cmake >= 3.16.0
 BuildRequires:	curl-devel
 BuildRequires:	jsoncpp-devel
 BuildRequires:	libmosquitto-devel
+BuildRequires:	libopenzwave-devel >= 1.5.0
 BuildRequires:	libstdc++-devel >= 6:4.9
 BuildRequires:	libusb-compat-devel
 BuildRequires:	linux-libc-headers
@@ -41,6 +42,7 @@ Requires(pre):	/usr/sbin/useradd
 Requires(post,preun,postun):	systemd-units >= 38
 Requires:	fonts-TTF-Google-Droid
 Requires:	fonts-TTF-OpenSans
+Requires:	libopenzwave >= 1.5.0
 Requires:	setup >= 2.10.1
 Suggests:	python3-libs
 Provides:	group(domoticz)
@@ -82,6 +84,7 @@ export CXXFLAGS="%{rpmcxxflags} -DPYTHON_LIBDIR=\\\"%{_libdir}\\\""
 	-DUSE_OPENSSL_STATIC=NO \
 	-DUSE_STATIC_BOOST=NO \
 	-DUSE_STATIC_LIBSTDCXX=NO \
+	-DUSE_STATIC_OPENZWAVE=NO \
 	-DFORCE_WITH_GPIO:BOOL=TRUE \
 	-DCMAKE_INSTALL_PREFIX=%{_datadir}/%{name} \
 	..
@@ -120,6 +123,10 @@ ln -s %{_fontsdir}/TTF/DroidSans.ttf \
 	$RPM_BUILD_ROOT%{_datadir}/%{name}/www/styles/element-dark/fonts
 ln -s %{_fontsdir}/TTF/OpenSans-Regular.ttf \
 	$RPM_BUILD_ROOT%{_datadir}/%{name}/www/styles/element-dark/fonts/OpenSans.ttf
+
+# OpenZWave Control Panel temp file
+ln -s %{_sharedstatedir}/%{name}/ozwcp.poll.XXXXXX.xml \
+	$RPM_BUILD_ROOT%{_datadir}/%{name}/ozwcp.poll.XXXXXX.xml
 
 %clean
 rm -rf $RPM_BUILD_ROOT
