@@ -1,12 +1,12 @@
 Summary:	Open source Home Automation System
 Name:		domoticz
-Version:	2024.4
+Version:	2024.6
 Release:	1
 License:	GPLv3+ and ASL 2.0 and Boost and BSD and MIT
 Group:		Base
 URL:		http://www.domoticz.com
 Source0:	https://github.com/domoticz/domoticz/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	23f0aab1b388076394530d769defc710
+# Source0-md5:	1da6a47bc9e0df388c43ebeeb9622899
 Source1:	%{name}.service
 Source2:	%{name}.conf
 # Use system tinyxpath (https://github.com/domoticz/domoticz/pull/1759)
@@ -17,7 +17,6 @@ Patch2:		no-git.patch
 Patch3:		%{name}-no_updates.patch
 Patch4:		config.patch
 BuildRequires:	boost-devel >= 1.66.0
-BuildRequires:	cereal-devel
 BuildRequires:	cmake >= 3.16.0
 BuildRequires:	curl-devel
 BuildRequires:	jsoncpp-devel

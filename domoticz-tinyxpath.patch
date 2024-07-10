@@ -142,7 +142,7 @@ index bc231d8f6..334f203a6 100644
 -#include "../tinyxpath/tinyxml.h"
 +#include <tinyxml.h>
  
- #define round(a) ( int ) ( a + .5 )
+ //GizMoCuz: Whoever is maintaining this class, please make use of the internal functions (like SendTempSensor) and remove them internal functions in here
  
 --- a/hardware/EcoDevices.cpp	2020-03-22 09:16:16.000000000 -0500
 +++ b/hardware/EcoDevices.cpp	2020-03-24 10:47:20.095926641 -0500
