@@ -22,7 +22,7 @@ BuildRequires:	curl-devel
 BuildRequires:	jsoncpp-devel
 BuildRequires:	libmosquitto-devel
 BuildRequires:	libopenzwave-devel >= 1.5.0
-BuildRequires:	libstdc++-devel >= 6:4.9
+BuildRequires:	libstdc++-devel >= 6:8
 BuildRequires:	libusb-compat-devel
 BuildRequires:	linux-libc-headers
 BuildRequires:	lua53-devel
