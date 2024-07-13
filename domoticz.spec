@@ -1,12 +1,12 @@
 Summary:	Open source Home Automation System
 Name:		domoticz
-Version:	2024.6
+Version:	2024.7
 Release:	1
 License:	GPLv3+ and ASL 2.0 and Boost and BSD and MIT
 Group:		Base
 URL:		http://www.domoticz.com
 Source0:	https://github.com/domoticz/domoticz/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	1da6a47bc9e0df388c43ebeeb9622899
+# Source0-md5:	d4456862e27178cccfab82e43516a2e8
 Source1:	%{name}.service
 Source2:	%{name}.conf
 # Use system tinyxpath (https://github.com/domoticz/domoticz/pull/1759)
