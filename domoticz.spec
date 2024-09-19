@@ -123,6 +123,8 @@ ln -s %{_fontsdir}/TTF/DroidSans.ttf \
 ln -s %{_fontsdir}/TTF/OpenSans-Regular.ttf \
 	$RPM_BUILD_ROOT%{_datadir}/%{name}/www/styles/element-dark/fonts/OpenSans.ttf
 
+%{__rm} $RPM_BUILD_ROOT%{_datadir}/%{name}/server_cert.pem
+
 # OpenZWave Control Panel temp file
 ln -s %{_sharedstatedir}/%{name}/ozwcp.poll.XXXXXX.xml \
 	$RPM_BUILD_ROOT%{_datadir}/%{name}/ozwcp.poll.XXXXXX.xml
