@@ -1,12 +1,12 @@
 Summary:	Open source Home Automation System
 Name:		domoticz
-Version:	2024.7
-Release:	2
+Version:	2025.1
+Release:	1
 License:	GPLv3+ and ASL 2.0 and Boost and BSD and MIT
 Group:		Base
 URL:		http://www.domoticz.com
 Source0:	https://github.com/domoticz/domoticz/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	d4456862e27178cccfab82e43516a2e8
+# Source0-md5:	b6ad2eb81df4319498c348cf339f3764
 Source1:	%{name}.service
 Source2:	%{name}.conf
 # Use system tinyxpath (https://github.com/domoticz/domoticz/pull/1759)
@@ -20,6 +20,7 @@ BuildRequires:	boost-devel >= 1.66.0
 BuildRequires:	cmake >= 3.16.0
 BuildRequires:	curl-devel
 BuildRequires:	jsoncpp-devel
+BuildRequires:	jwt-cpp-devel
 BuildRequires:	libmosquitto-devel
 BuildRequires:	libopenzwave-devel >= 1.5.0
 BuildRequires:	libstdc++-devel >= 6:8
@@ -79,6 +80,7 @@ export CXXFLAGS="%{rpmcxxflags} -DPYTHON_LIBDIR=\\\"%{_libdir}\\\""
 	-DUSE_BUILTIN_MQTT=NO \
 	-DUSE_BUILTIN_SQLITE=NO \
 	-DUSE_BUILTIN_TINYXPATH=NO \
+	-DUSE_BUILTIN_JWTCPP=NO \
 	-DUSE_LUA_STATIC=NO \
 	-DUSE_OPENSSL_STATIC=NO \
 	-DUSE_STATIC_BOOST=NO \
