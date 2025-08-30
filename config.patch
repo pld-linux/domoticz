@@ -32,11 +32,11 @@
  
  # Application path (folder where domoticz is installed in)
 -# app_path=/opt/domoticz
-+app_path=@DOMOTICZ_DIR@
++app_path=@APP_DIR@
  
  # User data path (where backups and scripts are installed)
 -# userdata_path=/opt/domoticz
-+userdata_path=@DOMOTICZ_DIR@
++userdata_path=@USERDATA_DIR@
  
  # Run as daemon (default when launched as service)
  # daemon=yes

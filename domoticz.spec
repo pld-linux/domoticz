@@ -106,9 +106,11 @@ install -d $RPM_BUILD_ROOT{%{_bindir},%{_sysconfdir}/{domoticz,sysconfig},%{syst
 # move binary to standard directory
 mv $RPM_BUILD_ROOT%{_datadir}/%{name}/%{name} $RPM_BUILD_ROOT%{_bindir}
 
-sed -e 's#@DOMOTICZ_DIR@#%{_datadir}/%{name}#g' %{SOURCE1} > $RPM_BUILD_ROOT%{systemdunitdir}/%{name}.service
-sed -e 's#@DOMOTICZ_DIR@#%{_datadir}/%{name}#g' scripts/domoticz.conf > $RPM_BUILD_ROOT%{_sysconfdir}/domoticz/domoticz.conf
-sed -e 's#@DOMOTICZ_CONF_DIR@#%{_sysconfdir}/%{name}#' %{SOURCE2} > $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
+sed -e 's#@USERDATA_DIR@#%{_sharedstatedir}/%{name}#g' %{SOURCE1} > $RPM_BUILD_ROOT%{systemdunitdir}/%{name}.service
+sed -e 's#@APP_DIR@#%{_datadir}/%{name}#g' \
+	-e 's#@USERDATA_DIR@#%{_sharedstatedir}/%{name}#g' \
+	scripts/domoticz.conf > $RPM_BUILD_ROOT%{_sysconfdir}/domoticz/domoticz.conf
+sed -e 's#@CONF_DIR@#%{_sysconfdir}/%{name}#' %{SOURCE2} > $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
 
 # Unbundle DroidSans.ttf
 %{__rm} $RPM_BUILD_ROOT%{_datadir}/%{name}/www/styles/element{al,-light,-dark}/fonts/{Droid,Open}Sans.ttf
