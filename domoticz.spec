@@ -1,10 +1,10 @@
 Summary:	Open source Home Automation System
+Summary(pl.UTF-8):	System automatyzacji domowej o otwartych źródłach
 Name:		domoticz
 Version:	2025.1
 Release:	1
-License:	GPLv3+ and ASL 2.0 and Boost and BSD and MIT
+License:	GPL v3+ and ASL 2.0 and Boost and BSD and MIT
 Group:		Base
-URL:		http://www.domoticz.com
 Source0:	https://github.com/domoticz/domoticz/archive/%{version}/%{name}-%{version}.tar.gz
 # Source0-md5:	b6ad2eb81df4319498c348cf339f3764
 Source1:	%{name}.service
@@ -16,6 +16,7 @@ Patch1:		%{name}-python.patch
 Patch2:		no-git.patch
 Patch3:		%{name}-no_updates.patch
 Patch4:		config.patch
+URL:		https://www.domoticz.com/
 BuildRequires:	boost-devel >= 1.66.0
 BuildRequires:	cmake >= 3.16.0
 BuildRequires:	curl-devel
@@ -53,7 +54,14 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Domoticz is a Home Automation System that lets you monitor and
 configure various devices like: Lights, Switches, various
 sensors/meters like Temperature, Rain, Wind, UV, Electra, Gas, Water
-and much more. Notifications/Alerts can be sent to any mobile device
+and much more. Notifications/Alerts can be sent to any mobile device.
+
+%description -l pl.UTF-8
+Domoticz to system automatyzacji domowej, pozwalający monitorować i
+konfigurować urządzenia takie jak oświetlenie, przełączniki, różne
+czujniki (temperatury, deszczu, wiatru, UV, elektryczności, gazu,
+wody) itp. Powiatomienia i alarmy mogą być wysyłane na dowolne
+urządzenie przenośne.
 
 %prep
 %setup -q
@@ -104,7 +112,7 @@ install -d $RPM_BUILD_ROOT{%{_bindir},%{_sysconfdir}/{domoticz,sysconfig},%{syst
 %{__rm} $RPM_BUILD_ROOT%{_datadir}/%{name}/*.txt
 
 # move binary to standard directory
-mv $RPM_BUILD_ROOT%{_datadir}/%{name}/%{name} $RPM_BUILD_ROOT%{_bindir}
+%{__mv} $RPM_BUILD_ROOT%{_datadir}/%{name}/%{name} $RPM_BUILD_ROOT%{_bindir}
 
 sed -e 's#@USERDATA_DIR@#%{_sharedstatedir}/%{name}#g' %{SOURCE1} > $RPM_BUILD_ROOT%{systemdunitdir}/%{name}.service
 sed -e 's#@APP_DIR@#%{_datadir}/%{name}#g' \
