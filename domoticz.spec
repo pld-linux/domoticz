@@ -2,7 +2,7 @@ Summary:	Open source Home Automation System
 Summary(pl.UTF-8):	System automatyzacji domowej o otwartych źródłach
 Name:		domoticz
 Version:	2025.1
-Release:	1
+Release:	2
 License:	GPL v3+ and ASL 2.0 and Boost and BSD and MIT
 Group:		Base
 Source0:	https://github.com/domoticz/domoticz/archive/%{version}/%{name}-%{version}.tar.gz
