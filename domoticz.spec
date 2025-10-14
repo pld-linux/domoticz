@@ -1,12 +1,12 @@
 Summary:	Open source Home Automation System
 Summary(pl.UTF-8):	System automatyzacji domowej o otwartych źródłach
 Name:		domoticz
-Version:	2025.1
-Release:	2
+Version:	2025.2
+Release:	1
 License:	GPL v3+ and ASL 2.0 and Boost and BSD and MIT
 Group:		Base
 Source0:	https://github.com/domoticz/domoticz/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	b6ad2eb81df4319498c348cf339f3764
+# Source0-md5:	2e16ef1dc9538e384c5c21b28a3cc8f2
 Source1:	%{name}.service
 Source2:	%{name}.conf
 # Use system tinyxpath (https://github.com/domoticz/domoticz/pull/1759)
@@ -96,6 +96,7 @@ export CXXFLAGS="%{rpmcxxflags} -DPYTHON_LIBDIR=\\\"%{_libdir}\\\""
 	-DUSE_STATIC_OPENZWAVE=NO \
 	-DFORCE_WITH_GPIO:BOOL=TRUE \
 	-DCMAKE_INSTALL_PREFIX=%{_datadir}/%{name} \
+	-DDISABLE_UPDATER:BOOL=ON \
 	..
 
 %{__make}
