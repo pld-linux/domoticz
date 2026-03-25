@@ -1,0 +1,19 @@
+--- libwebem/CMakeLists.txt.orig	2026-03-25 20:47:51.707919529 +0100
++++ libwebem/CMakeLists.txt	2026-03-25 20:48:44.120955690 +0100
+@@ -21,7 +21,6 @@
+ option(WEBEM_ENABLE_GZIP     "Enable GZip compression (requires zlib)" ON)
+ option(WEBEM_BUILD_EXAMPLES  "Build example applications"            OFF)
+ option(WEBEM_BUILD_TESTS    "Build unit tests"           OFF)
+-option(BUILD_SHARED_LIBS    "Build shared library"       OFF)
+ 
+ # Core source files (in src/)
+ set(WEBEM_SOURCES
+@@ -75,7 +74,7 @@
+ endif()
+ 
+ # Library target
+-add_library(webem ${WEBEM_SOURCES} ${WEBEM_PUBLIC_HEADERS} ${WEBEM_INTERNAL_HEADERS})
++add_library(webem STATIC ${WEBEM_SOURCES} ${WEBEM_PUBLIC_HEADERS} ${WEBEM_INTERNAL_HEADERS})
+ add_library(webem::webem ALIAS webem)
+ 
+ # Shared library versioning (for .so symlinks on Linux)

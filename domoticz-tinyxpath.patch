@@ -21,9 +21,9 @@ index bc231d8f6..334f203a6 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -365,22 +365,6 @@
- webserver/server.cpp
- webserver/Websockets.cpp
- webserver/WebsocketHandler.cpp
+ smtpclient/SMTPClient.cpp
+ tcpserver/TCPClient.cpp
+ tcpserver/TCPServer.cpp
 -tinyxpath/action_store.cpp
 -tinyxpath/htmlutil.cpp
 -tinyxpath/lex_util.cpp
@@ -42,7 +42,7 @@ index bc231d8f6..334f203a6 100644
 -tinyxpath/xpath_syntax.cpp
  )
  
- add_executable(domoticz ${domoticz_SRCS})
+ # Create dependency targets BEFORE libwebem so it finds them via parent scope
 @@ -682,6 +666,47 @@
    ENDIF(LIBUSB_FOUND)
  ENDIF(WITH_LIBUSB)
@@ -118,13 +118,16 @@ index bc231d8f6..334f203a6 100644
  #endif
  
  #include "DelayedLink.h"
---- a/hardware/plugins/Plugins.cpp	2020-03-22 09:16:16.000000000 -0500
-+++ b/hardware/plugins/Plugins.cpp	2020-03-24 13:45:46.056965796 -0500
-@@ -16,10 +16,11 @@
- #include "../../main/Logger.h"
+--- domoticz-2026.1/hardware/plugins/Plugins.cpp.orig	2026-03-25 07:39:37.000000000 +0100
++++ domoticz-2026.1/hardware/plugins/Plugins.cpp	2026-03-25 18:52:07.418726270 +0100
+@@ -19,13 +19,14 @@
  #include "../../main/SQLHelper.h"
+ #include "../../main/json_helper.h"
  #include "../../main/mainworker.h"
 -#include "../../tinyxpath/tinyxml.h"
+ 
+ #include <algorithm>
+ #include <set>
  
  #include "../../notifications/NotificationHelper.h"
  
@@ -152,7 +155,7 @@ index bc231d8f6..334f203a6 100644
  #include "../httpclient/HTTPClient.h"
 -#include "../tinyxpath/tinyxml.h"
 -#include "../tinyxpath/xpath_static.h"
- #include "../webserver/Base64.h"
+ #include <libwebem/Base64.h>
  #include "../main/json_helper.h"
  #include <sstream>
 +#include <tinyxml.h>
@@ -200,7 +203,7 @@ index bc231d8f6..334f203a6 100644
  #include "../notifications/NotificationHelper.h"
 -#include "../tinyxpath/tinyxml.h"
 +#include <tinyxml.h>
- #include "../webserver/Base64.h"
+ #include <libwebem/Base64.h>
  #include "hardwaretypes.h"
  #include <iostream>
 --- domoticz-2023.2/hardware/Enever.cpp.orig	2023-07-21 17:23:44.000000000 +0200
@@ -211,7 +214,7 @@ index bc231d8f6..334f203a6 100644
  #include "../notifications/NotificationHelper.h"
 -#include "../tinyxpath/tinyxml.h"
 +#include <tinyxml.h>
- #include "../webserver/Base64.h"
+ #include <libwebem/Base64.h>
  #include "hardwaretypes.h"
  #include <iostream>
 --- domoticz-2024.1/hardware/MitsubishiWF.cpp.orig	2024-01-01 12:59:22.000000000 +0100
@@ -221,10 +224,43 @@ index bc231d8f6..334f203a6 100644
  #include "../main/SQLHelper.h"
  #include "../notifications/NotificationHelper.h"
 -#include "../tinyxpath/tinyxml.h"
- #include "../webserver/Base64.h"
+ #include <libwebem/Base64.h>
  #include "hardwaretypes.h"
  #include <iostream>
 +#include <tinyxml.h>
  
  
  #ifdef _DEBUG
+--- domoticz-2026.1/main/WebServerCmds.cpp.orig	2026-03-25 07:39:37.000000000 +0100
++++ domoticz-2026.1/main/WebServerCmds.cpp	2026-03-25 19:49:47.548752272 +0100
+@@ -43,7 +43,7 @@
+ #ifdef ENABLE_PYTHON
+ #include "../hardware/plugins/Plugins.h"
+ #include "../hardware/plugins/PluginManager.h"
+-#include "../tinyxpath/tinyxml.h"
++#include <tinyxml.h>
+ #endif
+ 
+ #ifndef WIN32
+--- domoticz-2026.1/main/LuaHandler.cpp.orig	2026-03-25 07:39:37.000000000 +0100
++++ domoticz-2026.1/main/LuaHandler.cpp	2026-03-25 19:50:53.930111099 +0100
+@@ -10,7 +10,7 @@
+ #include <lauxlib.h>
+ }
+ 
+-#include "../tinyxpath/xpath_processor.h"
++#include <xpath_processor.h>
+ 
+ #include <json/json.h>
+ #include "SQLHelper.h"
+--- domoticz-2026.1/main/LuaCommon.cpp.orig	2026-03-25 07:39:37.000000000 +0100
++++ domoticz-2026.1/main/LuaCommon.cpp	2026-03-25 19:51:20.775979199 +0100
+@@ -10,7 +10,7 @@
+ #include <lauxlib.h>
+ }
+ 
+-#include "../tinyxpath/xpath_processor.h"
++#include <xpath_processor.h>
+ 
+ #include "json_helper.h"
+ #include "SQLHelper.h"

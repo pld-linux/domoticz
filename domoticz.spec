@@ -1,14 +1,18 @@
+%define		libwebem_ref	9010adf22d968828e15c2ed3b510de59ce59affe
+
 Summary:	Open source Home Automation System
 Summary(pl.UTF-8):	System automatyzacji domowej o otwartych źródłach
 Name:		domoticz
-Version:	2025.2
+Version:	2026.1
 Release:	1
 License:	GPL v3+ and ASL 2.0 and Boost and BSD and MIT
 Group:		Base
 Source0:	https://github.com/domoticz/domoticz/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	2e16ef1dc9538e384c5c21b28a3cc8f2
-Source1:	%{name}.service
-Source2:	%{name}.conf
+# Source0-md5:	66db641342af99d6e21d43d380cd1a60
+Source1:	https://github.com/domoticz/libwebem/archive/%{libwebem_ref}/libwebem-%{libwebem_ref}.tar.gz
+# Source1-md5:	6d45eb0d6c4ad9858d1032d944ff48e7
+Source2:	%{name}.service
+Source3:	%{name}.conf
 # Use system tinyxpath (https://github.com/domoticz/domoticz/pull/1759)
 Patch0:		%{name}-tinyxpath.patch
 # Fix python detection (https://github.com/domoticz/domoticz/pull/1749)
@@ -16,6 +20,8 @@ Patch1:		%{name}-python.patch
 Patch2:		no-git.patch
 Patch3:		%{name}-no_updates.patch
 Patch4:		config.patch
+Patch5:		libwebem-minizip.patch
+Patch6:		libwebem-static.patch
 URL:		https://www.domoticz.com/
 BuildRequires:	boost-devel >= 1.66.0
 BuildRequires:	cmake >= 3.16.0
@@ -64,7 +70,7 @@ wody) itp. Powiatomienia i alarmy mogą być wysyłane na dowolne
 urządzenie przenośne.
 
 %prep
-%setup -q
+%setup -q -a1
 %patch -P0 -p1
 %patch -P1 -p1
 %patch -P2 -p1
@@ -77,7 +83,13 @@ echo '#define APPHASH "%{snap}"' >> appversion.h
 APPDATE=$(date --date="%{date}" "+%s")
 echo "#define APPDATE ${APPDATE}" >> appversion.h
 
-%{__rm} -r extern tinyxpath
+%{__rm} -r extern/* tinyxpath
+
+%{__mv} libwebem-%{libwebem_ref} extern/libwebem
+%patch -P5 -p1 -d extern/libwebem
+%patch -P6 -p1 -d extern/libwebem
+
+%{__sed} -i -e '1s,/usr/bin/env bash,%{__bash},' scripts/install.sh
 
 %build
 install -d build && cd build
@@ -85,7 +97,6 @@ export CXXFLAGS="%{rpmcxxflags} -DPYTHON_LIBDIR=\\\"%{_libdir}\\\""
 %cmake \
 	-DUSE_BUILTIN_JSONCPP=NO \
 	-DUSE_BUILTIN_MINIZIP=NO \
-	-DUSE_BUILTIN_MQTT=NO \
 	-DUSE_BUILTIN_SQLITE=NO \
 	-DUSE_BUILTIN_TINYXPATH=NO \
 	-DUSE_BUILTIN_JWTCPP=NO \
@@ -115,11 +126,11 @@ install -d $RPM_BUILD_ROOT{%{_bindir},%{_sysconfdir}/{domoticz,sysconfig},%{syst
 # move binary to standard directory
 %{__mv} $RPM_BUILD_ROOT%{_datadir}/%{name}/%{name} $RPM_BUILD_ROOT%{_bindir}
 
-sed -e 's#@USERDATA_DIR@#%{_sharedstatedir}/%{name}#g' %{SOURCE1} > $RPM_BUILD_ROOT%{systemdunitdir}/%{name}.service
+sed -e 's#@USERDATA_DIR@#%{_sharedstatedir}/%{name}#g' %{SOURCE2} > $RPM_BUILD_ROOT%{systemdunitdir}/%{name}.service
 sed -e 's#@APP_DIR@#%{_datadir}/%{name}#g' \
 	-e 's#@USERDATA_DIR@#%{_sharedstatedir}/%{name}#g' \
 	scripts/domoticz.conf > $RPM_BUILD_ROOT%{_sysconfdir}/domoticz/domoticz.conf
-sed -e 's#@CONF_DIR@#%{_sysconfdir}/%{name}#' %{SOURCE2} > $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
+sed -e 's#@CONF_DIR@#%{_sysconfdir}/%{name}#' %{SOURCE3} > $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
 
 # Unbundle DroidSans.ttf
 %{__rm} $RPM_BUILD_ROOT%{_datadir}/%{name}/www/styles/element{al,-light,-dark}/fonts/{Droid,Open}Sans.ttf

@@ -1,0 +1,21 @@
+--- libwebem/CMakeLists.txt.orig	2026-03-21 19:30:59.000000000 +0100
++++ libwebem/CMakeLists.txt	2026-03-25 19:37:49.720088229 +0100
+@@ -166,8 +166,16 @@
+         if(minizip_FOUND)
+             target_link_libraries(webem PRIVATE minizip::minizip)
+         else()
+-            message(WARNING "minizip not found - disabling ZIP support. Install minizip to enable it.")
+-            target_compile_definitions(webem PUBLIC WEBSERVER_DONT_USE_ZIP)
++            find_package(PkgConfig)
++            pkg_check_modules(minizip REQUIRED minizip)
++            if(minizip_FOUND)
++                target_include_directories(webem PRIVATE ${minizip_INCLUDE_DIRS})
++                target_link_directories(webem PRIVATE ${minizip_LIBRARY_DIRS})
++                target_link_libraries(webem PRIVATE ${minizip_LIBRARIES})
++            else()
++                message(WARNING "minizip not found - disabling ZIP support. Install minizip to enable it.")
++                target_compile_definitions(webem PUBLIC WEBSERVER_DONT_USE_ZIP)
++            endif()
+         endif()
+     endif()
+ else()
