@@ -1,0 +1,45 @@
+--- domoticz-2026.2/CMakeLists.txt.orig	2026-06-01 01:02:38.958193892 +0200
++++ domoticz-2026.2/CMakeLists.txt	2026-06-01 02:00:41.040239739 +0200
+@@ -6,6 +6,7 @@
+ INCLUDE(CheckIncludeFile)
+ INCLUDE(CheckIncludeFiles)
+ INCLUDE(CheckFunctionExists)
++INCLUDE(CheckCXXSourceCompiles)
+ INCLUDE(InstallRequiredSystemLibraries)
+ INCLUDE(TestBigEndian)
+ 
+@@ -535,6 +536,34 @@
+ 
+ ## Link libraries
+ 
++CHECK_CXX_SOURCE_COMPILES("
++#include <atomic>
++#include <cstdint>
++std::atomic<uint64_t> x = 0;
++int main() {
++x++;
++return 0;
++}
++" BUILTIN_ATOMICS)
++
++IF(NOT BUILTIN_ATOMICS)
++  set (OLD_CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES})
++  set (CMAKE_REQUIRED_LIBRARIES "atomic;${CMAKE_REQUIRED_LIBRARIES}")
++  CHECK_CXX_SOURCE_COMPILES("
++#include <atomic>
++#include <cstdint>
++std::atomic<uint64_t> x = 0;
++int main() {
++x++;
++return 0;
++}
++" NEEDS_LIBATOMIC)
++  set (CMAKE_REQUIRED_LIBRARIES "${OLD_CMAKE_REQUIRED_LIBRARIES}")
++  IF(NEEDS_LIBATOMIC)
++    target_link_libraries(domoticz atomic)
++  ENDIF(NEEDS_LIBATOMIC)
++ENDIF()
++
+ # jsoncpp
+ IF(USE_BUILTIN_JSONCPP)
+   MESSAGE(STATUS "Using builtin jsoncpp library")

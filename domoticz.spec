@@ -22,12 +22,16 @@ Patch3:		%{name}-no_updates.patch
 Patch4:		config.patch
 Patch5:		libwebem-minizip.patch
 Patch6:		libwebem-static.patch
+Patch7:		atomic.patch
 URL:		https://www.domoticz.com/
 BuildRequires:	boost-devel >= 1.66.0
 BuildRequires:	cmake >= 3.16.0
 BuildRequires:	curl-devel
 BuildRequires:	jsoncpp-devel
 BuildRequires:	jwt-cpp-devel
+%ifnarch %arch_with_atomics64
+BuildRequires:	libatomic-devel
+%endif
 BuildRequires:	libmosquitto-devel
 BuildRequires:	libopenzwave-devel >= 1.5.0
 BuildRequires:	libstdc++-devel >= 6:8
@@ -39,7 +43,7 @@ BuildRequires:	openssl-devel
 BuildRequires:	pkgconfig
 BuildRequires:	python3 >= 1:3.4
 BuildRequires:	python3-devel >= 1:3.4
-BuildRequires:	rpmbuild(macros) >= 1.644
+BuildRequires:	rpmbuild(macros) >= 2.025
 BuildRequires:	sqlite3-devel
 BuildRequires:	tinyxml-devel
 BuildRequires:	tinyxpath-devel
@@ -76,6 +80,7 @@ urządzenie przenośne.
 %patch -P2 -p1
 %patch -P3 -p1
 %patch -P4 -p1
+%patch -P7 -p1
 
 APPVERSION="%{version}"
 echo "#define APPVERSION ${APPVERSION##*.}" > appversion.h
