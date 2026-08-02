@@ -5,9 +5,9 @@
  option(WEBEM_BUILD_EXAMPLES  "Build example applications"            OFF)
  option(WEBEM_BUILD_TESTS    "Build unit tests"           OFF)
 -option(BUILD_SHARED_LIBS    "Build shared library"       OFF)
+ option(WEBEM_ENABLE_ASAN    "Build with AddressSanitizer" OFF)
  
- # Core source files (in src/)
- set(WEBEM_SOURCES
+ # AddressSanitizer, opt-in. This library has memory-safety-sensitive code paths
 @@ -75,7 +74,7 @@
  endif()
  
