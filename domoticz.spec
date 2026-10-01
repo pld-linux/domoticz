@@ -1,16 +1,16 @@
-%define		libwebem_ref	49a9c5c52492535f3777e02a039cfa32558bde19
+%define		libwebem_ref	dde28f230efefa279aceb92f039ea251b34234d8
 
 Summary:	Open source Home Automation System
 Summary(pl.UTF-8):	System automatyzacji domowej o otwartych źródłach
 Name:		domoticz
-Version:	2026.3
+Version:	2026.4
 Release:	1
 License:	GPL v3+ and ASL 2.0 and Boost and BSD and MIT
 Group:		Base
 Source0:	https://github.com/domoticz/domoticz/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	4f1c4369d83c62a756ad5762ae14ea33
+# Source0-md5:	f60113a23cda916fe69deb676070e38f
 Source1:	https://github.com/domoticz/libwebem/archive/%{libwebem_ref}/libwebem-%{libwebem_ref}.tar.gz
-# Source1-md5:	22e384e175c1cc2e5e03b9812d7c838e
+# Source1-md5:	5454be23baa3cb33b32897dce154be17
 Source2:	%{name}.service
 Source3:	%{name}.conf
 # Use system tinyxpath (https://github.com/domoticz/domoticz/pull/1759)

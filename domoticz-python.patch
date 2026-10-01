@@ -14,7 +14,7 @@
              // Platform-specific suffixes
  			std::string extension;
 @@ -182,7 +180,7 @@
- 				shared_lib_ = LoadLibrary(lib_name.c_str());
+ 				shared_lib_ = LoadPythonLibrary(version, lib_name);
  #else
  				lib_name += extension;
 -				FindLibrary(lib_name.c_str(), true);
